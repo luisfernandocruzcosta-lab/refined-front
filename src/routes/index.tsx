@@ -34,8 +34,8 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-function BrandMark({ small = false }: { small?: boolean }) {
-  return <span className={`${small ? "size-8 text-xs" : "size-10 text-sm"} grid shrink-0 place-items-center rounded-full bg-primary font-display font-semibold text-primary-foreground`}>C</span>;
+function HeaderLogo() {
+  return <img src={logoImage} alt="Carvalho's Cell" width={1303} height={394} className="h-9 w-auto sm:h-10" />;
 }
 
 function Index() {
