@@ -1,0 +1,13 @@
+[build]
+  command = "bun run build"
+  publish = "dist/client"
+
+[build.environment]
+  NODE_VERSION = "22"
+  BUN_VERSION = "1.2"
+
+# The site is fully prerendered (static). Fallback keeps deep links working.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
