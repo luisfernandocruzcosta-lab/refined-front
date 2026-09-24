@@ -35,7 +35,7 @@ export const Route = createFileRoute("/")({
 });
 
 function HeaderLogo() {
-  return <img src={logoImage} alt="Carvalho's Cell" width={1303} height={394} className="h-9 w-auto sm:h-10" />;
+  return <img src={logoImage} alt="Carvalho's Cell" width={800} height={241} className="h-9 w-auto sm:h-10" />;
 }
 
 function Index() {
@@ -128,7 +128,7 @@ function Index() {
 
       <footer id="contato" className="mx-auto max-w-7xl px-5 pb-10 lg:px-10">
         <div className="flex flex-col items-start justify-between gap-6 border-t border-border pt-8 sm:flex-row sm:items-center">
-          <div className="flex flex-col gap-1"><img src={logoImage} alt="Carvalho's Cell" width={1303} height={394} className="h-8 w-auto" /><p className="text-xs text-subtle">Tecnologia com garantia e procedência.</p></div>
+          <div className="flex flex-col gap-1"><img src={logoImage} alt="Carvalho's Cell" width={800} height={241} className="h-8 w-auto" /><p className="text-xs text-subtle">Tecnologia com garantia e procedência.</p></div>
           <div className="flex items-center gap-5 text-sm"><a className="nav-link" href="https://instagram.com/carvalhoscell" target="_blank" rel="noreferrer">Instagram</a><a className="button-primary" href={whatsappLink("Olá! Vim pelo site da Carvalho's Cell.")} target="_blank" rel="noreferrer">WhatsApp <span aria-hidden="true">↗</span></a></div>
         </div>
       </footer>
