@@ -43,9 +43,8 @@ function Index() {
     <main className="mesh min-h-screen overflow-hidden bg-background font-body text-foreground antialiased">
       <header className="relative z-30 border-b border-border/60 bg-background/60 backdrop-blur-xl">
         <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 lg:px-10">
-          <a href="#inicio" className="flex items-center gap-3" aria-label="Carvalho's Cell — início">
-            <BrandMark />
-            <span className="font-display text-base font-semibold">Carvalho's Cell</span>
+          <a href="#inicio" className="flex shrink-0 items-center" aria-label="Carvalho's Cell — início">
+            <HeaderLogo />
           </a>
           <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex" aria-label="Navegação principal">
             <a className="nav-link" href="#colecao">Celulares</a>
