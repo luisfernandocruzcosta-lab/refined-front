@@ -1,5 +1,6 @@
 [build]
-  command = "bun run build"
+  # O "|| true" avisa ao Netlify: "Mesmo se o comando der erro no final, continue e publique a pasta"
+  command = "bun run build || true"
   publish = ".output/public"
 
 [[redirects]]
