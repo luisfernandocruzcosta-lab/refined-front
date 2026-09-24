@@ -3,6 +3,7 @@ import heroImage from "../assets/iphone-15-hero.jpg";
 import galaxyImage from "../assets/galaxy-s23.jpg";
 import redmiImage from "../assets/redmi-note-13.jpg";
 import accessoriesImage from "../assets/accessories-editorial.jpg";
+import logoImage from "../assets/carvalhos-cell-logo.png";
 
 const whatsappNumber = "5511999999999";
 
