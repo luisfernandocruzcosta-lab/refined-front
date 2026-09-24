@@ -1,11 +1,13 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 export default defineConfig({
-  // Força o Nitro a gerar um build estático compatível com o Netlify
+  // Desativa o SSR para o Nitro gerar apenas os arquivos estáticos de cliente
   nitro: {
-    preset: "static"
+    preset: "static",
+    ssr: false
   },
   tanstackStart: {
+    // Aponta explicitamente para a entrada do servidor padrão se necessário
     server: { entry: "server" },
   },
 });
