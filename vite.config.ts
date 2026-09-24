@@ -1,13 +1,14 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 export default defineConfig({
-  // Desativa o SSR para o Nitro gerar apenas os arquivos estáticos de cliente
+  // Desativa o SSR para o compilador gerar o index.html estático correto
   nitro: {
     preset: "static",
     ssr: false
   },
   tanstackStart: {
-    // Aponta explicitamente para a entrada do servidor padrão se necessário
+    // Evita que o servidor tente rodar rotas de API/SSR no deploy estático
+    ssr: false,
     server: { entry: "server" },
   },
 });
