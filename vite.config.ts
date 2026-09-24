@@ -1,8 +1,10 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 export default defineConfig({
-  // Se estiver rodando no Netlify, ativa o preset do Netlify para o Nitro
-  nitro: process.env.NETLIFY ? { preset: "netlify" } : undefined,
+  // Adicione esta linha para mudar o alvo do Nitro para o Netlify
+  nitro: {
+    preset: "netlify"
+  },
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
