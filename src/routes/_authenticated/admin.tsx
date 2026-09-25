@@ -152,7 +152,7 @@ function AdminPage() {
                     <p className="truncate text-sm text-muted-foreground">{p.category} · {p.condition} · {formatPrice(Number(p.price))}</p>
                   </div>
                   <button onClick={() => edit(p)} className="nav-link text-sm">Editar</button>
-                  <button onClick={() => remove(p)} className="nav-link text-sm text-destructive">Remover</button>
+                  <button onClick={() => remove(p)} className="nav-link text-sm">Remover</button>
                 </div>
               ))}
             </div>

@@ -186,3 +186,17 @@
   html { scroll-behavior: auto; }
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
 }
+@utility field {
+  display: block;
+  width: 100%;
+  min-height: 2.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+  background: color-mix(in oklch, var(--background) 70%, transparent);
+  padding: 0.55rem 0.8rem;
+  font-size: 1rem;
+  color: var(--foreground);
+  outline: none;
+  transition: border-color 200ms ease-in-out, box-shadow 200ms ease-in-out;
+  &:focus { border-color: var(--primary); box-shadow: 0 0 0 3px color-mix(in oklch, var(--primary) 22%, transparent); }
+}
