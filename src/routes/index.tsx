@@ -1,19 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import heroImage from "../assets/iphone-15-hero.jpg";
 import galaxyImage from "../assets/galaxy-s23.jpg";
 import redmiImage from "../assets/redmi-note-13.jpg";
 import accessoriesImage from "../assets/accessories-editorial.jpg";
 import logoImage from "../assets/carvalhos-cell-logo.png";
+import { fetchProducts, formatPrice } from "@/lib/products";
 
 const whatsappNumber = "5511999999999";
 
-const products = [
-  { brand: "Apple", name: "iPhone 15", detail: "128GB · Azul · Novo", price: "R$ 4.899", oldPrice: "R$ 5.299", tag: "Oferta", image: heroImage },
-  { brand: "Samsung", name: "Galaxy S23", detail: "256GB · Preto · Seminovo", price: "R$ 2.199", oldPrice: "R$ 2.399", tag: "Reservado", image: galaxyImage },
-  { brand: "Xiaomi", name: "Redmi Note 13", detail: "128GB · Cinza · Novo", price: "R$ 1.199", image: redmiImage },
-  { brand: "Apple", name: "iPhone 13", detail: "128GB · Meia-noite · Seminovo", price: "R$ 2.799", image: heroImage },
-  { brand: "Acessórios", name: "AirPods Pro 2", detail: "Branco · Novo", price: "R$ 1.199", oldPrice: "R$ 1.399", tag: "Oferta", image: accessoriesImage },
-  { brand: "Acessórios", name: "Carregador 20W USB-C", detail: "Branco · Novo", price: "R$ 99", image: accessoriesImage },
+type ShowcaseItem = { key: string; brand: string; name: string; detail: string; price: string; oldPrice?: string; tag?: string; image: string };
+
+const fallbackProducts: ShowcaseItem[] = [
+  { key: "a", brand: "Apple", name: "iPhone 15", detail: "128GB · Azul · Novo", price: "R$ 4.899", oldPrice: "R$ 5.299", tag: "Oferta", image: heroImage },
+  { key: "b", brand: "Samsung", name: "Galaxy S23", detail: "256GB · Preto · Seminovo", price: "R$ 2.199", oldPrice: "R$ 2.399", tag: "Reservado", image: galaxyImage },
+  { key: "c", brand: "Xiaomi", name: "Redmi Note 13", detail: "128GB · Cinza · Novo", price: "R$ 1.199", image: redmiImage },
+  { key: "d", brand: "Apple", name: "iPhone 13", detail: "128GB · Meia-noite · Seminovo", price: "R$ 2.799", image: heroImage },
+  { key: "e", brand: "Acessórios", name: "AirPods Pro 2", detail: "Branco · Novo", price: "R$ 1.199", oldPrice: "R$ 1.399", tag: "Oferta", image: accessoriesImage },
+  { key: "f", brand: "Acessórios", name: "Carregador 20W USB-C", detail: "Branco · Novo", price: "R$ 99", image: accessoriesImage },
 ];
 
 function whatsappLink(message: string) {
@@ -39,6 +43,17 @@ function HeaderLogo() {
 }
 
 function Index() {
+  const { data } = useQuery({ queryKey: ["products"], queryFn: fetchProducts });
+  const products: ShowcaseItem[] = data && data.length
+    ? data.map((p) => ({
+        key: p.id, brand: p.brand, name: p.name,
+        detail: [p.detail, p.condition].filter(Boolean).join(" · "),
+        price: formatPrice(Number(p.price)),
+        oldPrice: p.old_price ? formatPrice(Number(p.old_price)) : undefined,
+        tag: p.tag ?? undefined,
+        image: p.imageUrl ?? accessoriesImage,
+      }))
+    : fallbackProducts;
   return (
     <main className="mesh min-h-screen overflow-hidden bg-background font-body text-foreground antialiased">
       <header className="relative z-30 border-b border-border/60 bg-background/60 backdrop-blur-xl">
@@ -97,9 +112,9 @@ function Index() {
         </div>
         <div id="ofertas" className="grid gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
           {products.map((product, index) => (
-            <article key={product.name} className="product-card group rounded-xl bg-card/70 p-3.5 sm:p-4">
+            <article key={product.key} className="product-card group rounded-xl bg-card/70 p-3.5 sm:p-4">
               <div className="relative overflow-hidden rounded-lg bg-background">
-                {product.tag && <span className={product.tag === "Reservado" ? "tag tag-muted" : "tag"}>{product.tag}</span>}
+                {product.tag && <span className={product.tag === "Oferta" ? "tag" : "tag tag-muted"}>{product.tag}</span>}
                 <img src={product.image} loading={index === 0 ? undefined : "lazy"} width={index === 0 ? 1200 : 1024} height={index === 0 ? 1408 : 1024} alt={`${product.name} — ${product.detail}`} className="aspect-square w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.025]" />
               </div>
               <div className="px-1 pb-1 pt-5">
