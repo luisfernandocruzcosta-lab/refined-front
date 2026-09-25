@@ -9,7 +9,7 @@ import { fetchProducts, formatPrice } from "@/lib/products";
 
 const whatsappNumber = "5511999999999";
 
-type ShowcaseItem = { key: string; brand: string; name: string; detail: string; price: string; oldPrice?: string; tag?: string; image: string };
+type ShowcaseItem = { key: string; brand: string; name: string; detail: string; price: string; oldPrice?: string | undefined; tag?: string | undefined; image: string };
 
 const fallbackProducts: ShowcaseItem[] = [
   { key: "a", brand: "Apple", name: "iPhone 15", detail: "128GB · Azul · Novo", price: "R$ 4.899", oldPrice: "R$ 5.299", tag: "Oferta", image: heroImage },
