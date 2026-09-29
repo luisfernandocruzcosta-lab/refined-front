@@ -59,6 +59,33 @@ export type Database = {
         }
         Relationships: []
       }
+      store_settings: {
+        Row: {
+          address: string
+          hours: string
+          id: number
+          instagram: string
+          updated_at: string
+          whatsapp: string
+        }
+        Insert: {
+          address?: string
+          hours?: string
+          id?: number
+          instagram?: string
+          updated_at?: string
+          whatsapp?: string
+        }
+        Update: {
+          address?: string
+          hours?: string
+          id?: number
+          instagram?: string
+          updated_at?: string
+          whatsapp?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
