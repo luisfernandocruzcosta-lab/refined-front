@@ -5,7 +5,7 @@ import galaxyImage from "../assets/galaxy-s23.jpg";
 import redmiImage from "../assets/redmi-note-13.jpg";
 import accessoriesImage from "../assets/accessories-editorial.jpg";
 import logoImage from "../assets/carvalhos-cell-logo.png";
-import { fetchProducts, formatPrice } from "@/lib/products";
+import { DEFAULT_SETTINGS, fetchProducts, fetchSettings, formatPrice } from "@/lib/products";
 
 let whatsappNumber = "5511999999999";
 

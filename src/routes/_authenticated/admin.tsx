@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { CATEGORIES, CONDITIONS, TAGS, fetchProducts, formatPrice, type Product } from "@/lib/products";
+import { CATEGORIES, CONDITIONS, TAGS, DEFAULT_SETTINGS, fetchSettings, type StoreSettings, fetchProducts, formatPrice, type Product } from "@/lib/products";
 import logoImage from "../../assets/carvalhos-cell-logo.png";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -157,6 +157,8 @@ function AdminPage() {
               ))}
             </div>
           </section>
+
+          <StoreSettingsForm />
         </div>
       )}
     </main>
@@ -165,4 +167,43 @@ function AdminPage() {
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return <label className="block text-sm"><span className="text-muted-foreground">{label}</span><div className="mt-1.5">{children}</div></label>;
+}
+
+function StoreSettingsForm() {
+  const qc = useQueryClient();
+  const settings = useQuery({ queryKey: ["settings"], queryFn: fetchSettings });
+  const [form, setForm] = useState<StoreSettings | null>(null);
+  const [msg, setMsg] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const v = form ?? settings.data ?? DEFAULT_SETTINGS;
+  const set = (k: keyof StoreSettings) => (e: React.ChangeEvent<HTMLInputElement>) => setForm({ ...v, [k]: e.target.value });
+
+  async function save(e: React.FormEvent) {
+    e.preventDefault();
+    const whatsapp = v.whatsapp.replace(/\D/g, "");
+    if (whatsapp.length < 10) return setMsg("Informe o WhatsApp com DDD (ex.: 5511999999999).");
+    setSaving(true);
+    const payload = { id: 1, address: v.address.trim().slice(0, 200), whatsapp, instagram: v.instagram.trim().replace(/^@/, "").slice(0, 60), hours: v.hours.trim().slice(0, 120) };
+    const { error } = await supabase.from("store_settings").upsert(payload);
+    setSaving(false);
+    setMsg(error ? "Erro ao salvar os dados." : "Dados da loja atualizados.");
+    if (!error) { setForm(null); qc.invalidateQueries({ queryKey: ["settings"] }); }
+  }
+
+  return (
+    <section className="lg:col-span-5">
+      <p className="section-label">Loja</p>
+      <h2 className="mt-2 font-display text-2xl font-semibold">Dados e endereço</h2>
+      <form onSubmit={save} className="mt-6 grid gap-4 rounded-xl border border-border/60 bg-card/70 p-5 sm:grid-cols-2">
+        <Field label="Endereço"><input className="field" value={v.address} onChange={set("address")} placeholder="Rua Exemplo, 123 — Centro, São Paulo" /></Field>
+        <Field label="Horário de funcionamento"><input className="field" value={v.hours} onChange={set("hours")} placeholder="Seg a Sáb, 9h às 18h" /></Field>
+        <Field label="WhatsApp (com DDI e DDD)"><input className="field" inputMode="tel" value={v.whatsapp} onChange={set("whatsapp")} placeholder="5511999999999" /></Field>
+        <Field label="Instagram"><input className="field" value={v.instagram} onChange={set("instagram")} placeholder="carvalhoscell" /></Field>
+        <div className="flex items-center gap-4 sm:col-span-2">
+          <button className="button-primary" disabled={saving}>{saving ? "Salvando..." : "Salvar dados"}</button>
+          {msg && <p className="text-sm text-primary">{msg}</p>}
+        </div>
+      </form>
+    </section>
+  );
 }
