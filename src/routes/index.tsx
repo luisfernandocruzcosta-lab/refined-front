@@ -7,7 +7,7 @@ import accessoriesImage from "../assets/accessories-editorial.jpg";
 import logoImage from "../assets/carvalhos-cell-logo.png";
 import { fetchProducts, formatPrice } from "@/lib/products";
 
-const whatsappNumber = "5511999999999";
+let whatsappNumber = "5511999999999";
 
 type ShowcaseItem = { key: string; brand: string; name: string; detail: string; price: string; oldPrice?: string | undefined; tag?: string | undefined; image: string };
 
@@ -44,6 +44,9 @@ function HeaderLogo() {
 
 function Index() {
   const { data } = useQuery({ queryKey: ["products"], queryFn: fetchProducts });
+  const { data: settings = DEFAULT_SETTINGS } = useQuery({ queryKey: ["settings"], queryFn: fetchSettings });
+  whatsappNumber = settings.whatsapp.replace(/\D/g, "") || DEFAULT_SETTINGS.whatsapp;
+  const insta = settings.instagram.replace(/^@/, "");
   const products: ShowcaseItem[] = data && data.length
     ? data.map((p) => ({
         key: p.id, brand: p.brand, name: p.name,
@@ -143,8 +146,8 @@ function Index() {
 
       <footer id="contato" className="mx-auto max-w-7xl px-5 pb-10 lg:px-10">
         <div className="flex flex-col items-center justify-between gap-6 border-t border-border pt-8 text-center sm:flex-row sm:items-center sm:text-left">
-          <div className="flex flex-col gap-1"><img src={logoImage} alt="Carvalho's Cell" width={800} height={241} className="h-8 w-auto" /><p className="text-xs text-subtle">Tecnologia com garantia e procedência.</p></div>
-          <div className="flex items-center gap-5 text-sm"><a className="nav-link" href="https://instagram.com/carvalhoscell" target="_blank" rel="noreferrer">Instagram</a><a className="button-primary" href={whatsappLink("Olá! Vim pelo site da Carvalho's Cell.")} target="_blank" rel="noreferrer">WhatsApp <span aria-hidden="true">↗</span></a></div>
+          <div className="flex flex-col gap-1"><img src={logoImage} alt="Carvalho's Cell" width={800} height={241} className="h-8 w-auto" /><p className="text-xs text-subtle">Tecnologia com garantia e procedência.</p>{settings.address && <a className="nav-link text-xs" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(settings.address)}`} target="_blank" rel="noreferrer">{settings.address}</a>}{settings.hours && <p className="text-xs text-muted-foreground">{settings.hours}</p>}</div>
+          <div className="flex items-center gap-5 text-sm"><a className="nav-link" href={`https://instagram.com/${insta}`} target="_blank" rel="noreferrer">Instagram</a><a className="button-primary" href={whatsappLink("Olá! Vim pelo site da Carvalho's Cell.")} target="_blank" rel="noreferrer">WhatsApp <span aria-hidden="true">↗</span></a></div>
         </div>
       </footer>
         <a className="whatsapp-fab fixed bottom-[calc(1.25rem+env(safe-area-inset-bottom))] right-[calc(1.25rem+env(safe-area-inset-right))] z-40 sm:hidden" href={whatsappLink("Olá! Vim pelo site da Carvalho's Cell e gostaria de mais informações.")} target="_blank" rel="noreferrer" aria-label="Conversar no WhatsApp">
