@@ -39,8 +39,7 @@ function AuthPage() {
       const { error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: `${window.location.origin}/admin` } });
       setLoading(false);
       if (error) return setMessage(error.message);
-      setMessage("Conta criada! Confirme pelo link enviado ao seu e-mail e depois entre.");
-      setMode("login");
+      navigate({ to: "/admin" });
     }
   }
 
