@@ -1,5 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { listTeam, createStaff, removeStaff } from "@/lib/team.functions";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { CATEGORIES, CONDITIONS, TAGS, DEFAULT_SETTINGS, fetchSettings, type StoreSettings, fetchProducts, formatPrice, type Product } from "@/lib/products";
@@ -207,6 +209,59 @@ function StoreSettingsForm() {
           {msg && <p className="text-sm text-primary">{msg}</p>}
         </div>
       </form>
+    </section>
+  );
+}
+
+function TeamSection() {
+  const qc = useQueryClient();
+  const list = useServerFn(listTeam);
+  const create = useServerFn(createStaff);
+  const del = useServerFn(removeStaff);
+  const team = useQuery({ queryKey: ["team"], queryFn: () => list() });
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [msg, setMsg] = useState<string | null>(null);
+  const add = useMutation({
+    mutationFn: () => create({ data: { email, password } }),
+    onSuccess: (r) => {
+      if (!r.ok) return setMsg(r.error.includes("registered") ? "Este e-mail já tem conta." : "Não foi possível criar a conta.");
+      setMsg("Conta criada. Envie o e-mail e a senha ao funcionário.");
+      setEmail(""); setPassword("");
+      qc.invalidateQueries({ queryKey: ["team"] });
+    },
+    onError: () => setMsg("Verifique o e-mail e use uma senha com 6+ caracteres."),
+  });
+  const rm = useMutation({
+    mutationFn: (id: string) => del({ data: { id } }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["team"] }),
+  });
+
+  return (
+    <section className="lg:col-span-5">
+      <p className="section-label">Equipe</p>
+      <h2 className="mt-2 font-display text-2xl font-semibold">Contas de funcionários</h2>
+      <p className="mt-2 text-sm text-muted-foreground">Funcionários podem publicar, editar e remover produtos. Só você altera os dados da loja e a equipe.</p>
+      <div className="mt-6 grid gap-6 rounded-xl border border-border/60 bg-card/70 p-5 lg:grid-cols-2">
+        <form onSubmit={(e) => { e.preventDefault(); setMsg(null); add.mutate(); }} className="space-y-4">
+          <Field label="E-mail do funcionário"><input className="field" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></Field>
+          <Field label="Senha inicial"><input className="field" type="text" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" /></Field>
+          <div className="flex items-center gap-4">
+            <button className="button-primary" disabled={add.isPending}>{add.isPending ? "Criando..." : "Criar conta"}</button>
+            {msg && <p className="text-sm text-primary">{msg}</p>}
+          </div>
+        </form>
+        <div className="space-y-3">
+          {team.isLoading && <p className="text-sm text-muted-foreground">Carregando...</p>}
+          {team.data?.length === 0 && <p className="text-sm text-muted-foreground">Nenhum funcionário cadastrado.</p>}
+          {team.data?.map((m) => (
+            <div key={m.id} className="flex items-center justify-between gap-3 rounded-lg bg-background/60 px-4 py-3">
+              <span className="truncate text-sm">{m.email}</span>
+              <button onClick={() => confirm(`Remover acesso de ${m.email}?`) && rm.mutate(m.id)} className="nav-link text-sm">Remover</button>
+            </div>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }
