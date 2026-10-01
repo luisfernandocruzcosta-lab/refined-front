@@ -20,6 +20,7 @@ export type Database = {
           category: string
           condition: string
           created_at: string
+          description: string
           detail: string
           id: string
           image_path: string | null
@@ -34,6 +35,7 @@ export type Database = {
           category: string
           condition?: string
           created_at?: string
+          description?: string
           detail?: string
           id?: string
           image_path?: string | null
@@ -48,6 +50,7 @@ export type Database = {
           category?: string
           condition?: string
           created_at?: string
+          description?: string
           detail?: string
           id?: string
           image_path?: string | null
@@ -118,7 +121,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "admin" | "user"
+      app_role: "admin" | "user" | "staff"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -246,7 +249,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "user"],
+      app_role: ["admin", "user", "staff"],
     },
   },
 } as const
