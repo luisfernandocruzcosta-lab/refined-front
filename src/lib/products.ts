@@ -11,6 +11,7 @@ export type Product = {
   category: string;
   condition: string;
   detail: string;
+  description: string;
   price: number;
   old_price: number | null;
   tag: string | null;

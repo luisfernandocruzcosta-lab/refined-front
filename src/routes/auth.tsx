@@ -49,8 +49,8 @@ function AuthPage() {
       <div className="w-full max-w-sm">
         <Link to="/" className="mb-10 flex justify-center"><img src={logoImage} alt="Carvalho's Cell" className="h-10 w-auto" /></Link>
         <div className="rounded-xl border border-border/60 bg-card/70 p-6 sm:p-8">
-          <h1 className="font-display text-2xl font-semibold">{mode === "login" ? "Painel do administrador" : "Criar conta de administrador"}</h1>
-          <p className="mt-2 text-sm text-muted-foreground">{mode === "login" ? "Entre para publicar e editar produtos." : "A primeira conta criada vira a administradora da loja."}</p>
+          <h1 className="font-display text-2xl font-semibold">{mode === "login" ? "Área do lojista" : "Criar conta de administrador"}</h1>
+          <p className="mt-2 text-sm text-muted-foreground">{mode === "login" ? "Administrador e funcionários entram aqui para gerir os produtos." : "A primeira conta criada vira a administradora da loja."}</p>
           <form onSubmit={onSubmit} className="mt-6 space-y-4">
             <label className="block text-sm"><span className="text-muted-foreground">E-mail</span>
               <input className="field mt-1.5" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />

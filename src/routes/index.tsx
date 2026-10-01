@@ -9,7 +9,7 @@ import { DEFAULT_SETTINGS, fetchProducts, fetchSettings, formatPrice } from "@/l
 
 let whatsappNumber = "5511999999999";
 
-type ShowcaseItem = { key: string; brand: string; name: string; detail: string; price: string; oldPrice?: string | undefined; tag?: string | undefined; image: string };
+type ShowcaseItem = { key: string; brand: string; name: string; detail: string; description?: string | undefined; price: string; oldPrice?: string | undefined; tag?: string | undefined; image: string };
 
 const fallbackProducts: ShowcaseItem[] = [
   { key: "a", brand: "Apple", name: "iPhone 15", detail: "128GB · Azul · Novo", price: "R$ 4.899", oldPrice: "R$ 5.299", tag: "Oferta", image: heroImage },
@@ -51,6 +51,7 @@ function Index() {
     ? data.map((p) => ({
         key: p.id, brand: p.brand, name: p.name,
         detail: [p.detail, p.condition].filter(Boolean).join(" · "),
+        description: p.description || undefined,
         price: formatPrice(Number(p.price)),
         oldPrice: p.old_price ? formatPrice(Number(p.old_price)) : undefined,
         tag: p.tag ?? undefined,
@@ -124,6 +125,12 @@ function Index() {
                 <p className="section-label text-subtle">{product.brand}</p>
                 <h3 className="mt-2 font-display text-lg font-medium">{product.name}</h3>
                 <p className="mt-1 text-sm text-muted-foreground">{product.detail}</p>
+                {product.description && (
+                  <details className="group/desc mt-3 text-sm">
+                    <summary className="nav-link cursor-pointer list-none text-primary">Ver descrição</summary>
+                    <p className="mt-2 whitespace-pre-line leading-relaxed text-muted-foreground">{product.description}</p>
+                  </details>
+                )}
                 <div className="mt-4 flex items-baseline gap-2">
                   <span className="font-display text-lg font-semibold text-primary">{product.price}</span>
                   {product.oldPrice && <span className="text-sm text-subtle line-through">{product.oldPrice}</span>}
