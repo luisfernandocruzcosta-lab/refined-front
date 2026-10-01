@@ -20,21 +20,22 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminPage,
 });
 
-type FormState = { id?: string; name: string; brand: string; category: string; condition: string; detail: string; price: string; old_price: string; tag: string; image_path: string | null };
-const empty: FormState = { name: "", brand: "", category: "iPhone", condition: "Novo", detail: "", price: "", old_price: "", tag: "", image_path: null };
+type FormState = { id?: string; name: string; brand: string; category: string; condition: string; detail: string; description: string; price: string; old_price: string; tag: string; image_path: string | null };
+const empty: FormState = { name: "", brand: "", category: "iPhone", condition: "Novo", detail: "", description: "", price: "", old_price: "", tag: "", image_path: null };
 
 function AdminPage() {
   const { user } = Route.useRouteContext();
   const navigate = useNavigate();
   const qc = useQueryClient();
   const role = useQuery({
-    queryKey: ["is-admin", user.id],
-    queryFn: async () => {
-      const { data } = await supabase.from("user_roles").select("role").eq("user_id", user.id).eq("role", "admin").maybeSingle();
-      return !!data;
+    queryKey: ["my-role", user.id],
+    queryFn: async (): Promise<"admin" | "staff" | null> => {
+      const { data } = await supabase.from("user_roles").select("role").eq("user_id", user.id);
+      const roles = (data ?? []).map((r) => r.role as string);
+      return roles.includes("admin") ? "admin" : roles.includes("staff") ? "staff" : null;
     },
   });
-  const products = useQuery({ queryKey: ["products"], queryFn: fetchProducts, enabled: role.data === true });
+  const products = useQuery({ queryKey: ["products"], queryFn: fetchProducts, enabled: !!role.data });
   const [form, setForm] = useState<FormState>(empty);
   const [file, setFile] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
@@ -48,7 +49,7 @@ function AdminPage() {
   }
 
   function edit(p: Product) {
-    setForm({ id: p.id, name: p.name, brand: p.brand, category: p.category, condition: p.condition, detail: p.detail, price: String(p.price), old_price: p.old_price ? String(p.old_price) : "", tag: p.tag ?? "", image_path: p.image_path });
+    setForm({ id: p.id, name: p.name, brand: p.brand, category: p.category, condition: p.condition, detail: p.detail, description: p.description ?? "", price: String(p.price), old_price: p.old_price ? String(p.old_price) : "", tag: p.tag ?? "", image_path: p.image_path });
     setFile(null);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -76,7 +77,7 @@ function AdminPage() {
       if (form.image_path) await supabase.storage.from("product-images").remove([form.image_path]);
       image_path = path;
     }
-    const payload = { name: form.name.trim().slice(0, 120), brand: form.brand.trim().slice(0, 60), category: form.category, condition: form.condition, detail: form.detail.trim().slice(0, 200), price, old_price: oldPrice, tag: form.tag || null, image_path };
+    const payload = { name: form.name.trim().slice(0, 120), brand: form.brand.trim().slice(0, 60), category: form.category, condition: form.condition, detail: form.detail.trim().slice(0, 200), description: form.description.trim().slice(0, 2000), price, old_price: oldPrice, tag: form.tag || null, image_path };
     const { error } = form.id
       ? await supabase.from("products").update(payload).eq("id", form.id)
       : await supabase.from("products").insert(payload);
@@ -88,7 +89,7 @@ function AdminPage() {
     qc.invalidateQueries({ queryKey: ["products"] });
   }
 
-  const set = (k: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setForm({ ...form, [k]: e.target.value });
+  const set = (k: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => setForm({ ...form, [k]: e.target.value });
 
   return (
     <main className="mesh min-h-screen bg-background font-body text-foreground">
@@ -105,7 +106,7 @@ function AdminPage() {
       {role.isLoading ? <p className="p-10 text-center text-muted-foreground">Carregando...</p> : !role.data ? (
         <div className="mx-auto max-w-md p-10 text-center">
           <h1 className="font-display text-2xl font-semibold">Sem permissão</h1>
-          <p className="mt-2 text-muted-foreground">Esta conta não é a administradora da loja.</p>
+          <p className="mt-2 text-muted-foreground">Esta conta não tem acesso à área do lojista. Peça ao administrador para criar sua conta.</p>
         </div>
       ) : (
         <div className="mx-auto grid max-w-6xl gap-10 px-5 py-10 lg:grid-cols-5">
@@ -126,6 +127,7 @@ function AdminPage() {
                 <Field label="Etiqueta"><select className="field" value={form.tag} onChange={set("tag")}>{TAGS.map((t) => <option key={t} value={t}>{t || "Nenhuma"}</option>)}</select></Field>
               </div>
               <Field label="Detalhes"><input className="field" value={form.detail} onChange={set("detail")} placeholder="128GB · Azul" /></Field>
+              <Field label="Descrição completa"><textarea className="field min-h-32 resize-y" maxLength={2000} value={form.description} onChange={set("description")} placeholder="Especificações, saúde da bateria, garantia, itens inclusos..." /></Field>
               <div className="grid grid-cols-2 gap-3">
                 <Field label="Preço (R$)"><input className="field" inputMode="decimal" value={form.price} onChange={set("price")} placeholder="4899" required /></Field>
                 <Field label="Preço antigo"><input className="field" inputMode="decimal" value={form.old_price} onChange={set("old_price")} placeholder="Opcional" /></Field>
@@ -158,7 +160,8 @@ function AdminPage() {
             </div>
           </section>
 
-          <StoreSettingsForm />
+          {role.data === "admin" && <TeamSection />}
+          {role.data === "admin" && <StoreSettingsForm />}
         </div>
       )}
     </main>
