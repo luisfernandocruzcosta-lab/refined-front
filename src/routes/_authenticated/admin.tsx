@@ -1,11 +1,12 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { listTeam, createStaff, removeStaff } from "@/lib/team.functions";
+import { listTeam, createStaff, removeStaff, resetStaffPassword } from "@/lib/team.functions";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { CATEGORIES, CONDITIONS, TAGS, DEFAULT_SETTINGS, fetchSettings, type StoreSettings, fetchProducts, formatPrice, type Product } from "@/lib/products";
 import logoImage from "../../assets/carvalhos-cell-logo.png";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
@@ -164,6 +165,7 @@ function AdminPage() {
 
           {role.data === "admin" && <TeamSection />}
           {role.data === "admin" && <StoreSettingsForm />}
+          <MyPasswordSection />
         </div>
       )}
     </main>
@@ -172,6 +174,41 @@ function AdminPage() {
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return <label className="block text-sm"><span className="text-muted-foreground">{label}</span><div className="mt-1.5">{children}</div></label>;
+}
+
+function MyPasswordSection() {
+  const [current, setCurrent] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmation, setConfirmation] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [msg, setMsg] = useState("");
+
+  async function save(e: React.FormEvent) {
+    e.preventDefault();
+    if (password !== confirmation) return setMsg("As senhas não coincidem.");
+    setSaving(true);
+    setMsg("");
+    const { error } = await supabase.auth.updateUser({ password, current_password: current });
+    setSaving(false);
+    if (error) return setMsg("Não foi possível trocar a senha. Confira a senha atual ou use 'Esqueci minha senha' na tela de login.");
+    setCurrent(""); setPassword(""); setConfirmation("");
+    setMsg("Senha alterada com sucesso.");
+  }
+
+  return <section className="lg:col-span-5">
+    <p className="section-label">Conta</p>
+    <h2 className="mt-2 font-display text-2xl font-semibold">Trocar minha senha</h2>
+    <form onSubmit={save} className="mt-6 grid gap-4 rounded-lg border border-border/60 bg-card/70 p-5 sm:grid-cols-2">
+      <Field label="Senha atual"><input className="field" type="password" autoComplete="current-password" required value={current} onChange={e => setCurrent(e.target.value)} /></Field>
+      <div className="hidden sm:block" />
+      <Field label="Nova senha"><input className="field" type="password" autoComplete="new-password" required minLength={6} maxLength={72} value={password} onChange={e => setPassword(e.target.value)} /></Field>
+      <Field label="Confirmar nova senha"><input className="field" type="password" autoComplete="new-password" required minLength={6} maxLength={72} value={confirmation} onChange={e => setConfirmation(e.target.value)} /></Field>
+      <div className="flex flex-wrap items-center gap-4 sm:col-span-2">
+        <Button className="button-primary" disabled={saving}>{saving ? "Salvando..." : "Trocar senha"}</Button>
+        {msg && <p role="status" className="text-sm text-primary">{msg}</p>}
+      </div>
+    </form>
+  </section>;
 }
 
 function StoreSettingsForm() {
@@ -218,10 +255,14 @@ function TeamSection() {
   const list = useServerFn(listTeam);
   const create = useServerFn(createStaff);
   const del = useServerFn(removeStaff);
+  const resetPassword = useServerFn(resetStaffPassword);
   const team = useQuery({ queryKey: ["team"], queryFn: () => list() });
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState<string | null>(null);
+  const [editingPasswordFor, setEditingPasswordFor] = useState<string | null>(null);
+  const [newPassword, setNewPassword] = useState("");
+  const [passwordMsg, setPasswordMsg] = useState<string | null>(null);
   const add = useMutation({
     mutationFn: () => create({ data: { email, password } }),
     onSuccess: (r) => {
@@ -236,6 +277,11 @@ function TeamSection() {
     mutationFn: (id: string) => del({ data: { id } }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["team"] }),
   });
+  const changePassword = useMutation({
+    mutationFn: (id: string) => resetPassword({ data: { id, password: newPassword } }),
+    onSuccess: () => { setEditingPasswordFor(null); setNewPassword(""); setPasswordMsg("Senha do funcionário atualizada. Informe a nova senha a ele com segurança."); },
+    onError: () => setPasswordMsg("Não foi possível alterar a senha. Tente novamente."),
+  });
 
   return (
     <section className="lg:col-span-5">
@@ -245,19 +291,29 @@ function TeamSection() {
       <div className="mt-6 grid gap-6 rounded-xl border border-border/60 bg-card/70 p-5 lg:grid-cols-2">
         <form onSubmit={(e) => { e.preventDefault(); setMsg(null); add.mutate(); }} className="space-y-4">
           <Field label="E-mail do funcionário"><input className="field" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} /></Field>
-          <Field label="Senha inicial"><input className="field" type="text" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" /></Field>
+          <Field label="Senha inicial"><input className="field" type="password" required minLength={6} maxLength={72} value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="new-password" /></Field>
           <div className="flex items-center gap-4">
             <button className="button-primary" disabled={add.isPending}>{add.isPending ? "Criando..." : "Criar conta"}</button>
             {msg && <p className="text-sm text-primary">{msg}</p>}
           </div>
         </form>
         <div className="space-y-3">
+          {passwordMsg && <p role="status" className="text-sm text-primary">{passwordMsg}</p>}
           {team.isLoading && <p className="text-sm text-muted-foreground">Carregando...</p>}
           {team.data?.length === 0 && <p className="text-sm text-muted-foreground">Nenhum funcionário cadastrado.</p>}
           {team.data?.map((m) => (
-            <div key={m.id} className="flex items-center justify-between gap-3 rounded-lg bg-background/60 px-4 py-3">
-              <span className="truncate text-sm">{m.email}</span>
-              <button onClick={() => confirm(`Remover acesso de ${m.email}?`) && rm.mutate(m.id)} className="nav-link text-sm">Remover</button>
+            <div key={m.id} className="rounded-lg bg-background/60 px-4 py-3">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <span className="min-w-0 break-all text-sm">{m.email}</span>
+                <div className="flex items-center gap-3">
+                  <Button type="button" variant="link" className="nav-link h-auto p-0 text-sm text-primary" onClick={() => { setEditingPasswordFor(editingPasswordFor === m.id ? null : m.id); setNewPassword(""); setPasswordMsg(null); }}>Trocar senha</Button>
+                  <Button type="button" variant="link" className="nav-link h-auto p-0 text-sm text-muted-foreground" onClick={() => confirm(`Remover acesso de ${m.email}?`) && rm.mutate(m.id)}>Remover</Button>
+                </div>
+              </div>
+              {editingPasswordFor === m.id && <form onSubmit={e => { e.preventDefault(); setPasswordMsg(null); changePassword.mutate(m.id); }} className="mt-4 flex flex-wrap items-end gap-3">
+                <Field label="Nova senha do funcionário"><input className="field" type="password" autoComplete="new-password" required minLength={6} maxLength={72} value={newPassword} onChange={e => setNewPassword(e.target.value)} /></Field>
+                <Button className="button-primary" disabled={changePassword.isPending}>{changePassword.isPending ? "Salvando..." : "Salvar senha"}</Button>
+              </form>}
             </div>
           ))}
         </div>
