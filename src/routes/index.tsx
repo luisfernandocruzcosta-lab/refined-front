@@ -82,7 +82,8 @@ function Index() {
           <div className="relative z-10 lg:col-span-6">
             <p className="eyebrow"><span className="size-1.5 rounded-full bg-primary" />Vitrine de tecnologia</p>
             <h1 className="mt-7 max-w-[18ch] text-balance font-display text-4xl font-semibold leading-[1.04] sm:text-5xl lg:text-6xl">
-              Celulares e acessórios tratados como joias.
+              Celulares e acessórios&nbsp;
+              escolhidos para você
             </h1>
             <p className="mt-6 max-w-[48ch] text-pretty text-base leading-relaxed text-muted-foreground sm:text-lg">
               Uma seleção de iPhone, Samsung e Xiaomi, com procedência, garantia e atendimento direto pelo WhatsApp.
