@@ -42,3 +42,17 @@ export const removeStaff = createServerFn({ method: "POST" })
     await supabaseAdmin.auth.admin.deleteUser(data.id);
     return { ok: true };
   });
+
+export const resetStaffPassword = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ id: z.string().uuid(), password: z.string().min(6).max(72) }).parse(d))
+  .handler(async ({ context, data }) => {
+    await assertAdmin(context.supabase, context.userId);
+    if (data.id === context.userId) throw new Error("Use a troca de senha da sua conta");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: role } = await supabaseAdmin.from("user_roles").select("role").eq("user_id", data.id).eq("role", "staff").maybeSingle();
+    if (!role) throw new Error("Conta não é de funcionário");
+    const { error } = await supabaseAdmin.auth.admin.updateUserById(data.id, { password: data.password });
+    if (error) throw new Error("Não foi possível alterar a senha");
+    return { ok: true };
+  });

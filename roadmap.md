@@ -1,0 +1,3 @@
+- [x] Recuperação de senha esquecida por e-mail e definição de nova senha.
+- [x] Troca da própria senha no painel e redefinição da senha de funcionários pelo administrador.
+- [x] Corrigir proporções da logo no rodapé e verificar no celular.

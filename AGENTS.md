@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep forgotten-password recovery on the public `/reset-password` route and require authenticated, role-checked server functions for staff password changes, so locked-out owners can recover access without exposing privileged account changes.
