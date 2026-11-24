@@ -4,16 +4,17 @@ import { useServerFn } from "@tanstack/react-start";
 import { listTeam, createStaff, removeStaff, resetStaffPassword } from "@/lib/team.functions";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { CATEGORIES, CONDITIONS, TAGS, DEFAULT_SETTINGS, fetchSettings, type StoreSettings, fetchProducts, formatPrice, type Product } from "@/lib/products";
-import logoImage from "../../assets/carvalhos-cell-logo.png";
+import { CATEGORIES, CONDITIONS, TAGS, fetchProducts, formatPrice, type Product } from "@/lib/products";
+import { Brand } from "@/components/brand";
 import { Button } from "@/components/ui/button";
+import { INSTAGRAM_URL } from "@/lib/catalog";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
-      { title: "Produtos — Painel Carvalho's Cell" },
+      { title: "Produtos — Painel Drummondshop" },
       { name: "description", content: "Cadastre, edite e remova produtos da vitrine." },
-      { property: "og:title", content: "Produtos — Painel Carvalho's Cell" },
+      { property: "og:title", content: "Produtos — Painel Drummondshop" },
       { property: "og:description", content: "Gerencie a vitrine da loja." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -98,7 +99,7 @@ function AdminPage() {
     <main className="mesh min-h-screen bg-background font-body text-foreground">
       <header className="border-b border-border/60 bg-background/60 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
-          <Link to="/"><img src={logoImage} alt="Carvalho's Cell" className="h-8 w-auto" /></Link>
+          <Link to="/"><Brand /></Link>
           <div className="flex items-center gap-4 text-sm">
             <Link to="/" className="nav-link hidden sm:inline-flex">Ver site</Link>
             <button onClick={signOut} className="button-secondary">Sair</button>
@@ -164,7 +165,7 @@ function AdminPage() {
           </section>
 
           {role.data === "admin" && <TeamSection />}
-          {role.data === "admin" && <StoreSettingsForm />}
+          {role.data === "admin" && <section className="lg:col-span-5"><p className="section-label">Loja</p><h2 className="mt-2 font-display text-2xl font-semibold">Atendimento</h2><Button asChild variant="quiet" className="mt-5"><a href={INSTAGRAM_URL} target="_blank" rel="noreferrer">Instagram @drummondshop</a></Button></section>}
           <MyPasswordSection />
         </div>
       )}
@@ -209,45 +210,6 @@ function MyPasswordSection() {
       </div>
     </form>
   </section>;
-}
-
-function StoreSettingsForm() {
-  const qc = useQueryClient();
-  const settings = useQuery({ queryKey: ["settings"], queryFn: fetchSettings });
-  const [form, setForm] = useState<StoreSettings | null>(null);
-  const [msg, setMsg] = useState<string | null>(null);
-  const [saving, setSaving] = useState(false);
-  const v = form ?? settings.data ?? DEFAULT_SETTINGS;
-  const set = (k: keyof StoreSettings) => (e: React.ChangeEvent<HTMLInputElement>) => setForm({ ...v, [k]: e.target.value });
-
-  async function save(e: React.FormEvent) {
-    e.preventDefault();
-    const whatsapp = v.whatsapp.replace(/\D/g, "");
-    if (whatsapp.length < 10) return setMsg("Informe o WhatsApp com DDD (ex.: 5511999999999).");
-    setSaving(true);
-    const payload = { id: 1, address: v.address.trim().slice(0, 200), whatsapp, instagram: v.instagram.trim().replace(/^@/, "").slice(0, 60), hours: v.hours.trim().slice(0, 120) };
-    const { error } = await supabase.from("store_settings").upsert(payload);
-    setSaving(false);
-    setMsg(error ? "Erro ao salvar os dados." : "Dados da loja atualizados.");
-    if (!error) { setForm(null); qc.invalidateQueries({ queryKey: ["settings"] }); }
-  }
-
-  return (
-    <section className="lg:col-span-5">
-      <p className="section-label">Loja</p>
-      <h2 className="mt-2 font-display text-2xl font-semibold">Dados e endereço</h2>
-      <form onSubmit={save} className="mt-6 grid gap-4 rounded-xl border border-border/60 bg-card/70 p-5 sm:grid-cols-2">
-        <Field label="Endereço"><input className="field" value={v.address} onChange={set("address")} placeholder="Rua Exemplo, 123 — Centro, São Paulo" /></Field>
-        <Field label="Horário de funcionamento"><input className="field" value={v.hours} onChange={set("hours")} placeholder="Seg a Sáb, 9h às 18h" /></Field>
-        <Field label="WhatsApp (com DDI e DDD)"><input className="field" inputMode="tel" value={v.whatsapp} onChange={set("whatsapp")} placeholder="5511999999999" /></Field>
-        <Field label="Instagram"><input className="field" value={v.instagram} onChange={set("instagram")} placeholder="carvalhoscell" /></Field>
-        <div className="flex items-center gap-4 sm:col-span-2">
-          <button className="button-primary" disabled={saving}>{saving ? "Salvando..." : "Salvar dados"}</button>
-          {msg && <p className="text-sm text-primary">{msg}</p>}
-        </div>
-      </form>
-    </section>
-  );
 }
 
 function TeamSection() {

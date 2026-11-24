@@ -1,15 +1,15 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import logoImage from "../assets/carvalhos-cell-logo.png";
+import { Brand } from "@/components/brand";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Entrar — Painel Carvalho's Cell" },
-      { name: "description", content: "Acesso restrito ao painel de produtos da Carvalho's Cell." },
-      { property: "og:title", content: "Entrar — Painel Carvalho's Cell" },
+      { title: "Entrar — Painel Drummondshop" },
+      { name: "description", content: "Acesso restrito ao painel de produtos da Drummondshop." },
+      { property: "og:title", content: "Entrar — Painel Drummondshop" },
       { property: "og:description", content: "Acesso restrito ao painel de produtos." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -53,7 +53,7 @@ function AuthPage() {
   return (
     <main className="mesh flex min-h-screen items-center justify-center bg-background px-5 font-body text-foreground">
       <div className="w-full max-w-sm">
-        <Link to="/" className="mb-10 flex justify-center"><img src={logoImage} alt="Carvalho's Cell" className="h-10 w-auto" /></Link>
+        <Link to="/" className="mb-10 flex justify-center"><Brand /></Link>
         <div className="rounded-xl border border-border/60 bg-card/70 p-6 sm:p-8">
           <h1 className="font-display text-2xl font-semibold">{mode === "login" ? "Área do lojista" : mode === "forgot" ? "Recuperar senha" : "Criar conta de administrador"}</h1>
           <p className="mt-2 text-sm text-muted-foreground">{mode === "login" ? "Administrador e funcionários entram aqui para gerir os produtos." : mode === "forgot" ? "Enviaremos um link para o e-mail da sua conta." : "A primeira conta criada vira a administradora da loja."}</p>

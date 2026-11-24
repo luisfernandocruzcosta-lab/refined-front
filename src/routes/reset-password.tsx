@@ -2,13 +2,13 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import logoImage from "../assets/carvalhos-cell-logo.png";
+import { Brand } from "@/components/brand";
 
 export const Route = createFileRoute("/reset-password")({
   head: () => ({ meta: [
-    { title: "Redefinir senha — Carvalho's Cell" },
-    { name: "description", content: "Defina uma nova senha para acessar a área do lojista da Carvalho's Cell." },
-    { property: "og:title", content: "Redefinir senha — Carvalho's Cell" },
+    { title: "Redefinir senha — Drummondshop" },
+    { name: "description", content: "Defina uma nova senha para acessar a área do lojista da Drummondshop." },
+    { property: "og:title", content: "Redefinir senha — Drummondshop" },
     { property: "og:description", content: "Recuperação de acesso à área do lojista." },
     { property: "og:type", content: "website" },
     { name: "twitter:card", content: "summary" },
@@ -57,7 +57,7 @@ function ResetPasswordPage() {
 
   return <main className="mesh flex min-h-screen items-center justify-center bg-background px-5 font-body text-foreground">
     <div className="w-full max-w-sm">
-      <Link to="/" className="mb-10 flex justify-center"><img src={logoImage} alt="Carvalho's Cell" className="h-10 w-auto max-w-full object-contain" /></Link>
+      <Link to="/" className="mb-10 flex justify-center"><Brand /></Link>
       <div className="rounded-lg border border-border/60 bg-card/70 p-6 sm:p-8">
         <h1 className="font-display text-2xl font-semibold">Definir nova senha</h1>
         {checking ? <p className="mt-4 text-sm text-muted-foreground">Verificando link...</p> : valid ?

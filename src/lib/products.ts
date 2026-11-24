@@ -38,7 +38,7 @@ export async function fetchProducts(): Promise<Product[]> {
 }
 
 export type StoreSettings = { address: string; whatsapp: string; instagram: string; hours: string };
-export const DEFAULT_SETTINGS: StoreSettings = { address: "", whatsapp: "5511999999999", instagram: "carvalhoscell", hours: "" };
+export const DEFAULT_SETTINGS: StoreSettings = { address: "", whatsapp: "", instagram: "drummondshop", hours: "" };
 
 export async function fetchSettings(): Promise<StoreSettings> {
   const { data } = await supabase.from("store_settings").select("address, whatsapp, instagram, hours").eq("id", 1).maybeSingle();
