@@ -78,7 +78,9 @@
 .store-header { position: relative; z-index: 40; background: var(--background); border-bottom: 1px solid var(--border); }
 .mobile-menu { overflow: hidden; }
 .mobile-menu-link { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-top: 1px solid var(--border); font-size: 14px; }
-.store-hero { position: relative; height: min(680px, calc(100svh - 94px)); min-height: 610px; isolation: isolate; overflow: hidden; background: var(--background); }
+.hero-scroll-sequence { position: relative; height: calc(max(610px, min(680px, 100svh - 94px)) + 75svh); }
+.store-hero { position: sticky; top: 0; height: min(680px, calc(100svh - 94px)); min-height: 610px; isolation: isolate; overflow: hidden; background: var(--background); }
+.hero-phone-reveal { height: 100%; width: 100%; }
 .hero-copy { position: relative; z-index: 2; text-align: center; padding-top: 36px; }
 .hero-title { font-family: var(--font-display); font-size: 34px; font-weight: 500; line-height: 1.13; max-width: 620px; margin: 13px auto 0; text-wrap: balance; }
 .hero-subtitle { max-width: 470px; margin: 17px auto 0; font-size: 12px; line-height: 1.8; color: var(--muted-foreground); text-wrap: pretty; }
@@ -135,6 +137,7 @@
   .page-width { width: min(100% - 72px, 1200px); }
   .brand { font-size: 25px; }
   .store-hero { height: min(750px, calc(100svh - 130px)); min-height: 650px; }
+  .hero-scroll-sequence { height: calc(max(650px, min(750px, 100svh - 130px)) + 85svh); }
   .hero-copy { padding-top: 45px; }
   .hero-title { font-size: 54px; }
   .hero-subtitle { font-size: 13px; }
@@ -157,6 +160,7 @@
 }
 @media (min-width:1024px) {
   .store-hero { height: min(660px, calc(100svh - 155px)); min-height: 610px; }
+  .hero-scroll-sequence { height: calc(max(610px, min(660px, 100svh - 155px)) + 95svh); }
   .hero-title { font-size: 60px; max-width: 850px; }
   .hero-copy { padding-top: 38px; }
   .hero-picture { inset: 340px 0 15px; }
@@ -172,9 +176,12 @@
   .hero-actions { gap: 6px; }
   .hero-actions .button-primary, .hero-actions .button-secondary { font-size: 10px; padding-inline: 9px; gap: 5px; }
   .store-hero { height: min(650px, calc(100svh - 94px)); min-height: 610px; }
+  .hero-scroll-sequence { height: calc(max(610px, min(650px, 100svh - 94px)) + 75svh); }
   .hero-picture { inset: 325px 0 20px; }
 }
 @media (prefers-reduced-motion:reduce) {
+  .hero-scroll-sequence { height: auto; }
+  .store-hero { position: relative; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }

@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useRef, useState, type ReactNode } from "react";
-import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
 import { ArrowUpRight, ArrowRight, ChevronLeft, ChevronRight, Instagram, Menu, X, Plus, Smartphone } from "lucide-react";
 import heroImage from "../assets/iphone-15-hero.webp";
 import { fetchProducts, formatPrice, type Product } from "@/lib/products";
@@ -37,10 +37,16 @@ function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [selected, setSelected] = useState<Product | null>(null);
   const rail = useRef<HTMLDivElement>(null);
-  const hero = useRef<HTMLElement>(null);
+  const hero = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: hero, offset: ["start start", "end start"] });
-  const parallax = useTransform(scrollYProgress, [0, 1], [0, 90]);
+  const { scrollYProgress } = useScroll({ target: hero, offset: ["start start", "end end"] });
+  const progress = useSpring(scrollYProgress, { stiffness: 110, damping: 28, restDelta: 0.001 });
+  const phoneY = useTransform(progress, [0, 0.3, 1], [0, -15, -120]);
+  const phoneScale = useTransform(progress, [0, 0.25, 0.85, 1], [1, 1.06, 1.65, 1.5]);
+  const phoneRotate = useTransform(progress, [0, 0.55, 1], [0, -9, 5]);
+  const phoneX = useTransform(progress, [0, 0.55, 1], ["0%", "-5%", "4%"]);
+  const copyOpacity = useTransform(progress, [0, 0.12, 0.35], [1, 1, 0]);
+  const copyY = useTransform(progress, [0, 0.35], [0, -55]);
   const visible = filterCatalog(products.data ?? [], category);
   function choose(value: string) {
     setCategory(value);
@@ -69,11 +75,14 @@ function Index() {
       </motion.nav>}</AnimatePresence>
     </header>
 
-    <section ref={hero} className="store-hero" aria-labelledby="hero-title">
-      <motion.div className="hero-picture" style={{ y: reduced ? 0 : parallax }} initial={reduced ? false : { opacity: 0, scale: 1.06, clipPath: "inset(8% 0 0 0)" }} animate={{ opacity: 1, scale: 1, clipPath: "inset(0% 0 0 0)" }} transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}>
+    <div ref={hero} className="hero-scroll-sequence">
+    <section className="store-hero" aria-labelledby="hero-title">
+      <motion.div className="hero-picture" style={{ y: reduced ? 0 : phoneY, scale: reduced ? 1 : phoneScale, rotate: reduced ? 0 : phoneRotate, x: reduced ? 0 : phoneX }}>
+        <motion.div className="hero-phone-reveal" initial={reduced ? false : { opacity: 0, clipPath: "inset(8% 0 0 0)" }} animate={{ opacity: 1, clipPath: "inset(0% 0 0 0)" }} transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}>
         <img src={heroImage} width={1193} height={1400} fetchPriority="high" alt="Smartphones em acabamento titânio, vistos de frente e de costas" className="hero-device" />
+        </motion.div>
       </motion.div>
-      <div className="hero-copy page-width">
+      <motion.div className="hero-copy page-width" style={{ opacity: reduced ? 1 : copyOpacity, y: reduced ? 0 : copyY }}>
         <motion.p className="section-label" initial={reduced ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>DRUMMONDSHOP</motion.p>
         <motion.h1 id="hero-title" initial={reduced ? false : { opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.1 }} className="hero-title">Tecnologia que eleva<br className="hidden sm:block" /> <span className="text-primary">sua experiência.</span></motion.h1>
         <motion.p className="hero-subtitle" initial={reduced ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.25 }}>Encontre seu próximo smartphone na Drummondshop. Os melhores modelos, acessórios e tecnologia em um só lugar.</motion.p>
@@ -81,9 +90,10 @@ function Index() {
           <Button asChild variant="premium"><a href="#catalogo">Explorar produtos <ArrowRight /></a></Button>
           <InstagramLink quiet>Fale pelo Instagram <ArrowUpRight /></InstagramLink>
         </motion.div>
-      </div>
+      </motion.div>
       <div className="hero-caption page-width"><span>Design. Potência. Possibilidades.</span><a href="#catalogo" className="nav-link">Conheça a seleção <span aria-hidden="true">↓</span></a></div>
     </section>
+    </div>
 
     <section id="catalogo" className="catalog-section" aria-labelledby="catalog-title">
       <div className="page-width">
