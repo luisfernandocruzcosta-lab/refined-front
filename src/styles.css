@@ -78,15 +78,15 @@
 .store-header { position: relative; z-index: 40; background: var(--background); border-bottom: 1px solid var(--border); }
 .mobile-menu { overflow: hidden; }
 .mobile-menu-link { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-top: 1px solid var(--border); font-size: 14px; }
-.store-hero { position: relative; height: 680px; isolation: isolate; overflow: hidden; background: var(--background); }
+.store-hero { position: relative; height: min(680px, calc(100svh - 94px)); min-height: 610px; isolation: isolate; overflow: hidden; background: var(--background); }
 .hero-copy { position: relative; z-index: 2; text-align: center; padding-top: 36px; }
 .hero-title { font-family: var(--font-display); font-size: 34px; font-weight: 500; line-height: 1.13; max-width: 620px; margin: 13px auto 0; text-wrap: balance; }
 .hero-subtitle { max-width: 470px; margin: 17px auto 0; font-size: 12px; line-height: 1.8; color: var(--muted-foreground); text-wrap: pretty; }
 .hero-actions { display: flex; justify-content: center; gap: 10px; margin-top: 22px; }
 .hero-actions .button-primary, .hero-actions .button-secondary { font-size: 11px; padding: 11px 12px; min-height: 42px; }
-.hero-picture { position: absolute; inset: 230px 0 0; z-index: 0; }
+.hero-picture { position: absolute; inset: 315px 0 20px; z-index: 0; }
 .hero-device { display: block; height: 100%; width: 100%; object-fit: contain; mask-image: linear-gradient(to bottom, transparent, var(--foreground) 15%, var(--foreground) 86%, transparent); }
-.hero-caption { position: absolute; bottom: 14px; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; font-size: 9px; color: var(--muted-foreground); z-index: 3; }
+.hero-caption { position: absolute; bottom: 14px; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; font-size: 9px; color: var(--muted-foreground); z-index: 3; padding-right: 54px; }
 .catalog-section { padding: 52px 0 0; background: var(--card); }
 .catalog-heading { display: flex; flex-direction: column; gap: 16px; }
 .section-title { font-family: var(--font-display); font-size: 28px; font-weight: 500; line-height: 1.2; text-wrap: balance; margin-top: 12px; }
@@ -134,12 +134,12 @@
 @media (min-width:640px) {
   .page-width { width: min(100% - 72px, 1200px); }
   .brand { font-size: 25px; }
-  .store-hero { height: 750px; }
+  .store-hero { height: min(750px, calc(100svh - 130px)); min-height: 650px; }
   .hero-copy { padding-top: 45px; }
   .hero-title { font-size: 54px; }
   .hero-subtitle { font-size: 13px; }
   .hero-actions .button-primary, .hero-actions .button-secondary { font-size: 12px; min-height: 44px; padding: 12px 20px; }
-  .hero-picture { inset: 275px 0 0; }
+  .hero-picture { inset: 345px 0 20px; }
   .hero-caption { bottom: 24px; font-size: 11px; }
   .catalog-section { padding-top: 70px; }
   .catalog-heading { flex-direction: row; align-items: flex-end; justify-content: space-between; }
@@ -156,10 +156,10 @@
   .detail-copy { padding: 42px 30px; align-self: center; }
 }
 @media (min-width:1024px) {
-  .store-hero { height: 720px; }
+  .store-hero { height: min(660px, calc(100svh - 155px)); min-height: 610px; }
   .hero-title { font-size: 60px; max-width: 850px; }
   .hero-copy { padding-top: 38px; }
-  .hero-picture { inset: 250px 0 -20px; }
+  .hero-picture { inset: 340px 0 15px; }
   .hero-device { object-fit: contain; }
   .product-grid { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 24px; }
   .product-info { padding: 25px; }
@@ -171,7 +171,8 @@
   .hero-title { font-size: 30px; }
   .hero-actions { gap: 6px; }
   .hero-actions .button-primary, .hero-actions .button-secondary { font-size: 10px; padding-inline: 9px; gap: 5px; }
-  .store-hero { height: 650px; }
+  .store-hero { height: min(650px, calc(100svh - 94px)); min-height: 610px; }
+  .hero-picture { inset: 325px 0 20px; }
 }
 @media (prefers-reduced-motion:reduce) {
   html { scroll-behavior: auto; }

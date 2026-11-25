@@ -1,4 +1,4 @@
-- [ ] Renovar identidade Drummondshop em todas as telas e favicon.
-- [ ] Substituir contatos pelo Instagram exclusivo.
-- [ ] Renovar vitrine, animações, filtros, carrossel mobile e detalhes dos produtos sem alterar dados cadastrados.
-- [ ] Validar navegação, links e apresentação desktop e mobile.
+- [x] Renovar identidade Drummondshop em todas as telas e favicon.
+- [x] Substituir contatos pelo Instagram exclusivo.
+- [x] Renovar vitrine, animações, filtros, carrossel mobile e detalhes dos produtos sem alterar dados cadastrados.
+- [x] Validar navegação, links e apresentação desktop e mobile.

@@ -70,7 +70,7 @@ function Index() {
     </header>
 
     <section ref={hero} className="store-hero" aria-labelledby="hero-title">
-      <motion.div className="hero-picture" style={reduced ? undefined : { y: parallax }} initial={reduced ? false : { opacity: 0, scale: 1.06 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}>
+      <motion.div className="hero-picture" style={{ y: reduced ? 0 : parallax }} initial={reduced ? false : { opacity: 0, scale: 1.06, clipPath: "inset(8% 0 0 0)" }} animate={{ opacity: 1, scale: 1, clipPath: "inset(0% 0 0 0)" }} transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }}>
         <img src={heroImage} width={1193} height={1400} fetchPriority="high" alt="Smartphones em acabamento titânio, vistos de frente e de costas" className="hero-device" />
       </motion.div>
       <div className="hero-copy page-width">
