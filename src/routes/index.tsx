@@ -22,8 +22,6 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const HERO_LINE_1 = ["Tecnologia", "que", "eleva"];
-const HERO_LINE_2 = ["sua", "experiência."];
 
 function Reveal({ children, className = "", delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
   const reduced = useReducedMotion();
@@ -102,20 +100,15 @@ function Index() {
         </motion.div>
       </motion.div>
       <motion.div className="hero-copy page-width" style={{ opacity: reduced ? 1 : copyOpacity, y: reduced ? 0 : copyY }}>
-        <motion.p className="section-label" initial={reduced ? false : { opacity: 0, y: -8, letterSpacing: "0.34em" }} animate={{ opacity: 1, y: 0, letterSpacing: "0.22em" }} transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}>DRUMMONDSHOP</motion.p>
+        <motion.p className="hero-kicker" initial={reduced ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .5 }}>Smartphones e acessórios</motion.p>
         <h1 id="hero-title" className="hero-title">
-          {HERO_LINE_1.map((word, i) => (
-            <motion.span key={word} className="hero-word hero-highlight mr-[0.26em]" initial={reduced ? false : { opacity: 0, y: 30, filter: "blur(8px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ duration: 0.7, delay: 0.08 + i * 0.09, ease: [0.22, 1, 0.36, 1] }}>{word}</motion.span>
-          ))}
-          <br className="hidden sm:block" />
-          {HERO_LINE_2.map((word, i) => (
-            <motion.span key={word} className="hero-word hero-highlight mr-[0.26em] last:mr-0" initial={reduced ? false : { opacity: 0, y: 34, filter: "blur(10px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ duration: 0.75, delay: 0.35 + i * 0.11, ease: [0.22, 1, 0.36, 1] }}>{word}</motion.span>
-          ))}
+          <motion.span className="hero-line" initial={reduced ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .65 }}>Tecnologia que</motion.span>
+          <motion.span className="hero-line hero-accent" initial={reduced ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .7, delay: .12 }}>eleva sua experiência.</motion.span>
         </h1>
-        <motion.p className="hero-subtitle" initial={reduced ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.55 }}>Encontre seu próximo smartphone na Drummondshop. Os melhores modelos, acessórios e tecnologia em um só lugar.</motion.p>
+        <motion.p className="hero-subtitle" initial={reduced ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .6, delay: .24 }}>Seu próximo smartphone está aqui. Encontre os melhores modelos e acessórios em um só lugar.</motion.p>
         <motion.div className="hero-actions" initial={reduced ? false : { opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.68 }}>
           <Button asChild variant="premium"><a href="#catalogo">Explorar produtos <ArrowRight /></a></Button>
-          <InstagramLink quiet>Fale pelo Instagram <ArrowUpRight /></InstagramLink>
+          <InstagramLink quiet>Instagram <ArrowUpRight /></InstagramLink>
         </motion.div>
       </motion.div>
       <div className="hero-caption page-width"><a href="#catalogo" className="scroll-cue">Role para explorar <ArrowDown size={16} aria-hidden="true" /></a></div>
@@ -131,7 +124,7 @@ function Index() {
         <div className="catalog-toolbar">
           <div className="catalog-search"><Search size={19} aria-hidden="true" /><input type="search" aria-label="Buscar produtos" placeholder="Buscar celular, marca ou modelo..." value={search} onChange={event => { setSearch(event.target.value); rail.current?.scrollTo({ left: 0, behavior: "instant" }); }} />{search && <button type="button" aria-label="Limpar busca" onClick={() => setSearch("")}><X size={17} /></button>}</div>
           <div className="category-list" role="group" aria-label="Filtrar por categoria">{SHOP_CATEGORIES.map(value => <Button key={value} variant="category" aria-pressed={category === value} onClick={() => choose(value)}>{category === value && <motion.span layoutId="active-category-pill" className="category-pill-bg" transition={reduced ? { duration: 0 } : { type: "spring", stiffness: 380, damping: 32 }} />}<span className="relative z-10">{value}</span></Button>)}</div>
-          <div className="flex shrink-0 gap-2 sm:hidden" hidden={visible.length <= 1}>
+          <div className="catalog-arrows flex shrink-0 gap-2 sm:hidden" hidden={visible.length <= 1}>
             <Button variant="quiet" size="icon" aria-label="Produtos anteriores" title="Produtos anteriores" onClick={() => scroll(-1)}><ChevronLeft /></Button>
             <Button variant="quiet" size="icon" aria-label="Próximos produtos" title="Próximos produtos" onClick={() => scroll(1)}><ChevronRight /></Button>
           </div>
