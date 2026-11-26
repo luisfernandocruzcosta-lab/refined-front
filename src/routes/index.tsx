@@ -45,13 +45,15 @@ function Index() {
   const progress = useSpring(scrollYProgress, { stiffness: 110, damping: 28, restDelta: 0.001 });
   const phoneY = useTransform(progress, [0, 0.3, 1], [0, -8, -35]);
   const mobileStageY = useTransform(progress, [0, 1], [0, -28]);
-  const mobileStageScale = useTransform(progress, [0, .5, 1], [1, 1.045, 1]);
   const phoneScale = useTransform(progress, [0, 0.25, 0.85, 1], [1, 1.03, 1.13, 1.08]);
   const phoneRotate = useTransform(progress, [0, 0.55, 1], [-3, 3, -2]);
   const panelTilt = useTransform(progress, [0, 0.5, 1], [12, 0, -12]);
   const panelSpread = useTransform(progress, [0, 0.6, 1], [18, 42, 65]);
   const panelSpreadLeft = useTransform(panelSpread, value => -value);
-  const ringRotate = useTransform(progress, [0, 1], [0, 75]);
+  const ringRotate = useTransform(progress, [0, 1], [0, 150]);
+  const sceneTilt = useTransform(progress, [0,.4,1], [0,-8,6]);
+  const sceneZoom = useTransform(progress, [0,.5,1], [1,1.12,.98]);
+  const beamX = useTransform(progress, [0,1], ["-35%","35%"]);
   const phoneX = useTransform(progress, [0, 0.55, 1], ["0%", "-5%", "4%"]);
   const auraScale = useTransform(progress, [0, 0.5, 1], [0.95, 1.2, 1.05]);
   const auraOpacity = useTransform(progress, [0, 0.45, 1], [0.55, 0.9, 0.6]);
@@ -93,11 +95,12 @@ function Index() {
     <div ref={hero} className="hero-scroll-sequence">
     <section className="store-hero" aria-labelledby="hero-title">
       <motion.div className="hero-aura" aria-hidden="true" style={{ scale: reduced ? 1 : auraScale, opacity: reduced ? 0.55 : auraOpacity }} />
+      <motion.div className="cinema-beam" aria-hidden="true" style={{ x: reduced ? 0 : beamX }}/>
       <motion.div className="hero-orbit" aria-hidden="true" style={{ rotate: reduced ? 0 : ringRotate }}><i/><i/><i/></motion.div>
       <motion.div className="hero-picture" style={{ y: reduced ? 0 : phoneY, scale: reduced ? 1 : phoneScale, rotate: reduced ? 0 : phoneRotate, x: reduced ? 0 : phoneX }}>
         <motion.div className="depth-panel depth-left" aria-hidden="true" style={{ x: reduced ? 0 : panelSpreadLeft, rotateY: reduced ? 0 : panelTilt }}><span>01 / MOBILE</span><Smartphone size={34} strokeWidth={1}/><b>SMARTPHONES</b></motion.div>
         <motion.div className="depth-panel depth-right" aria-hidden="true" style={{ x: reduced ? 0 : panelSpread, rotateY: reduced ? 0 : panelTilt }}><span>02 / TECH</span><Plus size={34} strokeWidth={1}/><b>ACESSÓRIOS</b></motion.div>
-        <motion.div className="hero-phone-reveal" style={{ y: reduced ? 0 : mobileStageY, scale: reduced ? 1 : mobileStageScale }} initial={reduced ? false : { opacity: 0, rotateX: 12, clipPath: "inset(12% 0 0 0)" }} animate={{ opacity: 1, rotateX: 0, clipPath: "inset(0% 0 0 0)" }} transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}>
+        <motion.div className="hero-phone-reveal" style={{ y: reduced ? 0 : mobileStageY, scale: reduced ? 1 : sceneZoom, rotateY: reduced ? 0 : sceneTilt }} initial={reduced ? false : { opacity: 0, rotateX: 12, clipPath: "inset(12% 0 0 0)" }} animate={{ opacity: 1, rotateX: 0, clipPath: "inset(0% 0 0 0)" }} transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}>
         <img src={heroImage} width={1193} height={1400} fetchPriority="high" alt="Smartphones vistos de frente e de costas" className="hero-device" />
         </motion.div>
       </motion.div>
@@ -117,6 +120,7 @@ function Index() {
     </section>
     </div>
 
+    <div className="cinema-divider" aria-hidden="true"><span/></div>
     <section id="catalogo" className="catalog-section" aria-labelledby="catalog-title">
       <div className="page-width">
         <Reveal className="catalog-heading">
