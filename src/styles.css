@@ -25,23 +25,23 @@
   --color-product-surface: var(--product-surface);
 }
 :root {
-  --background: oklch(0.08 0.032 292);
-  --foreground: oklch(0.99 0.006 290);
-  --card: oklch(0.125 0.045 292);
-  --primary: oklch(0.66 0.29 306);
-  --primary-glow: oklch(0.72 0.30 322);
-  --primary-cyan: oklch(0.78 0.18 212);
+  --background: #09091a;
+  --foreground: #f8f7ff;
+  --card: #121026;
+  --primary: #b899ff;
+  --primary-glow: #e38afb;
+  --primary-cyan: #51baff;
   --primary-foreground: oklch(0.99 0.005 290);
-  --muted: oklch(0.18 0.055 292);
-  --muted-foreground: oklch(0.78 0.045 292);
-  --subtle: oklch(0.64 0.045 292);
-  --border: oklch(0.46 0.16 304 / 0.42);
+  --muted: #201b35;
+  --muted-foreground: #c0b9d5;
+  --subtle: #a49bbd;
+  --border: #39304f;
   --overlay: oklch(0.05 0.03 292 / 0.86);
-  --product-surface: oklch(0.155 0.052 294);
-  --gradient-brand: linear-gradient(115deg, var(--primary-glow) 0%, var(--primary) 48%, var(--primary-cyan) 100%);
+  --product-surface: #1b1830;
+  --gradient-brand: linear-gradient(115deg, #9c27c9 0%, #7139d8 48%, #195cb8 100%);
   --shadow-soft: 0 24px 64px oklch(0.03 0.03 292 / 0.65);
-  --shadow-accent: 0 0 22px color-mix(in oklab, var(--primary-glow) 45%, transparent), 0 8px 34px color-mix(in oklab, var(--primary) 42%, transparent);
-  --neon-ring: 0 0 0 1px color-mix(in oklab, var(--primary-glow) 60%, transparent), 0 0 28px color-mix(in oklab, var(--primary) 36%, transparent);
+  --shadow-accent: 0 8px 24px #7139d83b;
+  --neon-ring: 0 0 0 1px #b899ff75, 0 8px 24px #7139d829;
 }
 @layer base {
   * { border-color: var(--border); -webkit-tap-highlight-color: transparent; box-sizing: border-box; letter-spacing: 0; }
@@ -64,7 +64,7 @@
   &:active { transform: scale(.98); }
 }
 @utility nav-link { display: inline-flex; align-items: center; gap: 7px; min-height: 36px; transition: color 200ms ease-in-out, text-shadow 200ms ease-in-out; @media (hover:hover) { &:hover { color: var(--primary-glow); text-shadow: 0 0 16px color-mix(in oklab, var(--primary-glow) 65%, transparent); } } }
-@utility section-label { color: var(--primary-glow); font-size: 11px; font-weight: 700; letter-spacing: 0.22em; line-height: 1.6; text-shadow: 0 0 18px color-mix(in oklab, var(--primary-glow) 60%, transparent); }
+@utility section-label { color: var(--primary-glow); font-size: 11px; font-weight: 700; letter-spacing: 0.22em; line-height: 1.6; text-shadow: none; }
 @utility mesh { background: radial-gradient(ellipse 80% 50% at 50% 0%, color-mix(in oklab, var(--primary) 18%, transparent), transparent 65%), var(--background); }
 @utility field {
   display: block; width: 100%; min-height: 44px; border-radius: 8px; border: 1px solid var(--border); background: var(--background); padding: 9px 12px; font-size: 16px; color: var(--foreground); outline: none; transition: border-color 200ms ease-in-out, box-shadow 200ms ease-in-out;
@@ -84,20 +84,20 @@
 .brand-mark { display: block; width: 38px; height: 34px; flex-shrink: 0; }
 .brand-wordmark { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; font-family: var(--font-body); font-size: 17px; font-weight: 750; letter-spacing: -.035em; color: var(--foreground); }
 .brand-shop { color: #d879fb; font-size: 10px; font-weight: 700; letter-spacing: .29em; }
-.hero-highlight { background: linear-gradient(110deg, var(--primary-glow) 0%, var(--primary) 35%, var(--primary-cyan) 68%, var(--primary-glow) 100%); background-size: 220% 220%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: neon-shimmer 5.5s ease-in-out infinite; filter: drop-shadow(0 0 26px color-mix(in oklab, var(--primary-glow) 45%, transparent)); }
+.hero-highlight { background: linear-gradient(110deg, var(--primary-glow) 0%, var(--primary) 35%, var(--primary-cyan) 68%, var(--primary-glow) 100%); background-size: 220% 220%; -webkit-background-clip: text; background-clip: text; color: transparent; filter: none; }
 .hero-word { display: inline-block; will-change: transform, opacity, filter; }
-.hero-aura { position: absolute; left: 50%; top: 56%; width: min(96vw, 760px); height: min(60vw, 460px); transform: translate(-50%, -50%); border-radius: 999px; background: radial-gradient(ellipse at 32% 45%, color-mix(in oklab, var(--primary-glow) 46%, transparent), transparent 60%), radial-gradient(ellipse at 72% 55%, color-mix(in oklab, var(--primary-cyan) 32%, transparent), transparent 58%); filter: blur(62px); pointer-events: none; z-index: 0; }
+.hero-aura { position: absolute; left: 50%; top: 56%; width: min(96vw, 760px); height: min(60vw, 460px); transform: translate(-50%, -50%); border-radius: 999px; background: radial-gradient(ellipse at 32% 45%, color-mix(in oklab, var(--primary-glow) 20%, transparent), transparent 60%), radial-gradient(ellipse at 72% 55%, color-mix(in oklab, var(--primary-cyan) 18%, transparent), transparent 58%); filter: blur(62px); pointer-events: none; z-index: 0; }
 .category-pill-bg { position: absolute; inset: 0; border-radius: 8px; background: var(--gradient-brand); box-shadow: var(--shadow-accent); z-index: 0; }
 .page-width { width: min(100% - 40px, 1200px); margin-inline: auto; }
 .storefront { overflow-x: clip; }
-.store-header { position: relative; z-index: 40; background: color-mix(in oklab, var(--background) 86%, transparent); backdrop-filter: blur(16px); border-bottom: 1px solid color-mix(in oklab, var(--primary-glow) 35%, transparent); box-shadow: 0 1px 24px color-mix(in oklab, var(--primary) 18%, transparent); }
+.store-header { position: relative; z-index: 40; background: color-mix(in oklab, var(--background) 86%, transparent); backdrop-filter: blur(16px); border-bottom: 1px solid color-mix(in oklab, var(--primary-glow) 35%, transparent); box-shadow: 0 8px 24px #05051033; }
 .mobile-menu { overflow: hidden; }
 .mobile-menu-link { display: flex; align-items: center; justify-content: space-between; padding: 15px 0; border-top: 1px solid var(--border); font-size: 14px; }
 .hero-scroll-sequence { position: relative; height: calc(max(610px, min(680px, 100svh - 94px)) + 75svh); }
-.store-hero { position: sticky; top: 0; height: min(680px, calc(100svh - 94px)); min-height: 610px; isolation: isolate; overflow: hidden; background: radial-gradient(ellipse 90% 58% at 50% 0%, color-mix(in oklab, var(--primary-glow) 24%, transparent), transparent 64%), var(--background); }
+.store-hero { position: sticky; top: 0; height: min(680px, calc(100svh - 94px)); min-height: 610px; isolation: isolate; overflow: hidden; background: radial-gradient(ellipse 85% 65% at 20% 0%, #59229a35, transparent 75%), radial-gradient(ellipse 75% 60% at 95% 60%, #174b9230, transparent 75%), var(--background); }
 .hero-phone-reveal { height: 100%; width: 100%; }
 .hero-copy { position: relative; z-index: 2; text-align: center; padding-top: 36px; }
-.hero-title { font-family: var(--font-display); font-size: 30px; font-weight: 800; letter-spacing: -0.035em; line-height: 1.08; max-width: 680px; margin: 14px auto 0; text-wrap: balance; text-shadow: 0 0 36px color-mix(in oklab, var(--primary) 26%, transparent); }
+.hero-title { font-family: var(--font-display); font-size: 30px; font-weight: 800; letter-spacing: -0.035em; line-height: 1.08; max-width: 680px; margin: 14px auto 0; text-wrap: balance; text-shadow: none; }
 .hero-subtitle { max-width: 470px; margin: 17px auto 0; font-size: 12px; line-height: 1.8; color: var(--muted-foreground); text-wrap: pretty; }
 .hero-actions { display: flex; justify-content: center; gap: 10px; margin-top: 22px; }
 .hero-actions .button-primary, .hero-actions .button-secondary { font-size: 11px; padding: 11px 12px; min-height: 42px; }
@@ -228,3 +228,17 @@
   html { scroll-behavior: auto; }
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
+
+/* Drummond Shop — unified premium visual identity */
+.storefront .store-header { border-bottom-color: #a78bfa29; }
+.storefront .brand-shop { color: #d79cff; }
+.storefront .catalog-section { background: linear-gradient(180deg, #121026, #0d0c20); }
+.storefront .catalog-product { border-radius: 18px; background: #121026; }
+.storefront .product-image-button { background: radial-gradient(ellipse at 50% 60%, #292044, #16142a 76%); }
+.storefront .product-brand { color: #c9b1ff; font-weight: 600; }
+.storefront .product-prices > span { font-weight: 700; }
+.storefront .product-tag { border: 1px solid #b899ff40; border-radius: 999px; }
+.storefront .product-contact { color: #e2d5ff; }
+.storefront .contact-section { background: radial-gradient(ellipse at 20% 20%, #59229a25, transparent 65%), radial-gradient(ellipse at 90% 70%, #174b9225, transparent 60%), #09091a; }
+.storefront .instagram-fab { background: linear-gradient(135deg, #9c27c9, #195cb8); color: #fff; border: 1px solid #c9b1ff66; }
+@media (hover:hover) { .storefront .catalog-product:hover { box-shadow: 0 12px 32px #7139d826; border-color: #a78bfa88; } }
