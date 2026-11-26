@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
-import { ArrowUpRight, ArrowRight, ChevronLeft, ChevronRight, Instagram, Menu, X, Plus, Smartphone } from "lucide-react";
+import { ArrowUpRight, ArrowRight, ChevronLeft, ChevronRight, Instagram, Menu, X, Plus, Smartphone, Search } from "lucide-react";
 import heroImage from "../assets/iphone-15-hero.webp";
 import { fetchProducts, formatPrice, type Product } from "@/lib/products";
 import { INSTAGRAM_URL, SHOP_CATEGORIES, filterCatalog } from "@/lib/catalog";
@@ -37,6 +37,7 @@ function InstagramLink({ children, quiet = false, className = "" }: { children: 
 function Index() {
   const products = useQuery({ queryKey: ["products"], queryFn: fetchProducts });
   const [category, setCategory] = useState("Todos");
+  const [search, setSearch] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
   const [selected, setSelected] = useState<Product | null>(null);
   const rail = useRef<HTMLDivElement>(null);
@@ -52,7 +53,12 @@ function Index() {
   const auraOpacity = useTransform(progress, [0, 0.45, 1], [0.55, 0.9, 0.6]);
   const copyOpacity = useTransform(progress, [0, 0.12, 0.35], [1, 1, 0]);
   const copyY = useTransform(progress, [0, 0.35], [0, -55]);
-  const visible = filterCatalog(products.data ?? [], category);
+  const normalize = (value: string) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const words = normalize(search.trim()).split(/\s+/).filter(Boolean);
+  const visible = filterCatalog(products.data ?? [], category).filter(product => {
+    const text = normalize([product.name, product.brand, product.detail, product.condition].filter(Boolean).join(" "));
+    return words.every(word => text.includes(word));
+  });
   function choose(value: string) {
     setCategory(value);
     setMenuOpen(false);
@@ -116,13 +122,15 @@ function Index() {
           <p className="max-w-64 text-sm leading-relaxed text-muted-foreground">Os modelos que você procura.<br />Os detalhes que fazem a diferença.</p>
         </Reveal>
         <div className="catalog-toolbar">
+          <div className="catalog-search"><Search size={19} aria-hidden="true" /><input type="search" aria-label="Buscar produtos" placeholder="Buscar celular, marca ou modelo..." value={search} onChange={event => { setSearch(event.target.value); rail.current?.scrollTo({ left: 0, behavior: "instant" }); }} />{search && <button type="button" aria-label="Limpar busca" onClick={() => setSearch("")}><X size={17} /></button>}</div>
           <div className="category-list" role="group" aria-label="Filtrar por categoria">{SHOP_CATEGORIES.map(value => <Button key={value} variant="category" aria-pressed={category === value} onClick={() => choose(value)}>{category === value && <motion.span layoutId="active-category-pill" className="category-pill-bg" transition={reduced ? { duration: 0 } : { type: "spring", stiffness: 380, damping: 32 }} />}<span className="relative z-10">{value}</span></Button>)}</div>
           <div className="flex shrink-0 gap-2 sm:hidden">
             <Button variant="quiet" size="icon" aria-label="Produtos anteriores" title="Produtos anteriores" onClick={() => scroll(-1)}><ChevronLeft /></Button>
             <Button variant="quiet" size="icon" aria-label="Próximos produtos" title="Próximos produtos" onClick={() => scroll(1)}><ChevronRight /></Button>
           </div>
         </div>
-        {products.isPending ? <div className="product-grid" aria-label="Carregando produtos">{[0, 1, 2].map(value => <div key={value} className="skeleton-product motion-safe:animate-pulse" />)}</div> : products.isError ? <div className="catalog-empty"><p>Não foi possível carregar os produtos.</p><Button variant="quiet" onClick={() => products.refetch()}>Tentar novamente</Button></div> : visible.length === 0 ? <div className="catalog-empty"><Smartphone className="mx-auto mb-4 text-primary" /><p>{category === "Todos" ? "Nenhum produto publicado no momento." : "Nenhum produto nesta categoria no momento."}</p><InstagramLink quiet>Consultar disponibilidade <ArrowUpRight /></InstagramLink></div> :
+        {!products.isPending && !products.isError && <p className="catalog-count" aria-live="polite">{visible.length} {visible.length === 1 ? "produto encontrado" : "produtos encontrados"}</p>}
+        {products.isPending ? <div className="product-grid" aria-label="Carregando produtos">{[0, 1, 2].map(value => <div key={value} className="skeleton-product motion-safe:animate-pulse" />)}</div> : products.isError ? <div className="catalog-empty"><p>Não foi possível carregar os produtos.</p><Button variant="quiet" onClick={() => products.refetch()}>Tentar novamente</Button></div> : visible.length === 0 ? <div className="catalog-empty"><Smartphone className="mx-auto mb-4 text-primary" /><p>{search.trim() ? "Nenhum produto corresponde à sua busca." : category === "Todos" ? "Nenhum produto publicado no momento." : "Nenhum produto nesta categoria no momento."}</p>{search.trim() && <Button variant="quiet" onClick={() => { setSearch(""); choose("Todos"); }}>Limpar filtros</Button>}<InstagramLink quiet>Consultar disponibilidade <ArrowUpRight /></InstagramLink></div> :
           <motion.div ref={rail} key={category} className="product-grid" initial={reduced ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
             {visible.map((product, index) => <Reveal key={product.id} delay={Math.min(index * 0.08, 0.24)} className="product-slot"><article className="catalog-product group">
               <Button variant="ghost" className="product-image-button" aria-label={`Ver detalhes de ${product.name}`} onClick={() => setSelected(product)}>
