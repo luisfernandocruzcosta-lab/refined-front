@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
-import { ArrowUpRight, ArrowRight, ChevronLeft, ChevronRight, Instagram, Menu, X, Plus, Smartphone, Search } from "lucide-react";
+import { ArrowUpRight, ArrowRight, ChevronLeft, ChevronRight, Instagram, Menu, X, Plus, Smartphone, Search, ArrowDown } from "lucide-react";
 import heroImage from "../assets/iphone-15-hero.webp";
 import { fetchProducts, formatPrice, type Product } from "@/lib/products";
 import { INSTAGRAM_URL, SHOP_CATEGORIES, filterCatalog } from "@/lib/catalog";
@@ -45,9 +45,9 @@ function Index() {
   const reduced = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: hero, offset: ["start start", "end end"] });
   const progress = useSpring(scrollYProgress, { stiffness: 110, damping: 28, restDelta: 0.001 });
-  const phoneY = useTransform(progress, [0, 0.3, 1], [0, -15, -120]);
-  const phoneScale = useTransform(progress, [0, 0.25, 0.85, 1], [1, 1.06, 1.65, 1.5]);
-  const phoneRotate = useTransform(progress, [0, 0.55, 1], [0, -9, 5]);
+  const phoneY = useTransform(progress, [0, 0.3, 1], [0, -8, -35]);
+  const phoneScale = useTransform(progress, [0, 0.25, 0.85, 1], [1, 1.03, 1.13, 1.08]);
+  const phoneRotate = useTransform(progress, [0, 0.55, 1], [0, -3, 2]);
   const phoneX = useTransform(progress, [0, 0.55, 1], ["0%", "-5%", "4%"]);
   const auraScale = useTransform(progress, [0, 0.5, 1], [0.95, 1.2, 1.05]);
   const auraOpacity = useTransform(progress, [0, 0.45, 1], [0.55, 0.9, 0.6]);
@@ -91,7 +91,7 @@ function Index() {
       <motion.div className="hero-aura" aria-hidden="true" style={{ scale: reduced ? 1 : auraScale, opacity: reduced ? 0.55 : auraOpacity }} />
       <motion.div className="hero-picture" style={{ y: reduced ? 0 : phoneY, scale: reduced ? 1 : phoneScale, rotate: reduced ? 0 : phoneRotate, x: reduced ? 0 : phoneX }}>
         <motion.div className="hero-phone-reveal" initial={reduced ? false : { opacity: 0, clipPath: "inset(8% 0 0 0)" }} animate={{ opacity: 1, clipPath: "inset(0% 0 0 0)" }} transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}>
-        <img src={heroImage} width={1193} height={1400} fetchPriority="high" alt="Smartphones em acabamento titânio, vistos de frente e de costas" className="hero-device" />
+        <img src={heroImage} width={1193} height={1400} fetchPriority="high" alt="Smartphones vistos de frente e de costas" className="hero-device" />
         </motion.div>
       </motion.div>
       <motion.div className="hero-copy page-width" style={{ opacity: reduced ? 1 : copyOpacity, y: reduced ? 0 : copyY }}>
@@ -111,7 +111,7 @@ function Index() {
           <InstagramLink quiet>Fale pelo Instagram <ArrowUpRight /></InstagramLink>
         </motion.div>
       </motion.div>
-      <div className="hero-caption page-width"><span>Design. Potência. Possibilidades.</span><a href="#catalogo" className="nav-link">Conheça a seleção <span aria-hidden="true">↓</span></a></div>
+      <div className="hero-caption page-width"><a href="#catalogo" className="scroll-cue">Role para explorar <ArrowDown size={16} aria-hidden="true" /></a></div>
     </section>
     </div>
 
