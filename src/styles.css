@@ -411,3 +411,34 @@
  .storefront .brand-wordmark { font-size:9px; }
  .storefront .brand-shop { font-size:7px; }
 }
+
+/* Mobile showcase: product-first, luminous accents, easy touch navigation. */
+.storefront .catalog-title-accent { color:#d49aff; }
+.storefront .product-prices .product-saving { display:inline-flex; align-items:center; width:fit-content; font-family:var(--font-body); font-size:11px; font-weight:650; letter-spacing:0; color:#e4c5ff; padding:5px 8px; border:1px solid #a855f755; border-radius:6px; background:#a855f719; }
+.storefront .product-contact { background:linear-gradient(115deg,#7026c8,#5030c7); color:#fff; border:1px solid #c084fc80; box-shadow:0 0 15px #a855f72b; font-weight:650; }
+@media(max-width:639px) {
+ .storefront .store-header { position:sticky; top:0; background:#0b0817ed; backdrop-filter:blur(14px); }
+ .storefront .hero-copy { padding-top:22px; }
+ .storefront .hero-title { font-size:clamp(33px,9vw,43px); line-height:1.04; letter-spacing:-.045em; }
+ .storefront .hero-accent { background-image:linear-gradient(110deg,#c478ff,#f0baff 58%,#a58aff); filter:drop-shadow(0 0 13px #a855f744); }
+ .storefront .hero-subtitle { font-size:14px; line-height:1.55; margin-top:12px; }
+ .storefront .hero-actions { margin-top:18px; }
+ .storefront .hero-actions .button-primary { box-shadow:0 0 5px #d8b4feaa,0 0 20px #a855f766; }
+ .storefront .hero-picture { height:clamp(210px,66vw,305px); margin-top:14px; }
+ .storefront .hero-orbit { width:80vw; top:68%; }
+ .storefront .hero-device { mask-image:radial-gradient(ellipse 56% 75% at 50% 48%,#000 46%,#000b 70%,transparent 100%); }
+ .storefront .scroll-cue { border:0; background:transparent; box-shadow:none; color:#d8b4fe; min-height:44px; }
+ .storefront .catalog-section { padding-top:30px; }
+ .storefront .catalog-heading { gap:10px; }
+ .storefront .catalog-heading .section-title { font-size:32px; line-height:1.1; }
+ .storefront .catalog-heading > p { font-size:14px; max-width:none; }
+ .storefront .catalog-product { border-radius:18px; box-shadow:0 10px 30px #0003; }
+ .storefront .product-image-button { aspect-ratio:1.15; }
+ .storefront .product-photo { object-fit:contain; }
+ .storefront .product-detail { min-height:0; }
+ .storefront .product-prices { margin-top:12px; }
+ .storefront .product-contact { margin-top:15px; min-height:48px; }
+ .storefront .catalog-search { border-color:#9964d060; }
+ .storefront .store-footer { padding-bottom:80px; }
+}
+@media(prefers-reduced-motion:reduce) { .storefront .hero-phone-reveal { transform:none!important; } }
