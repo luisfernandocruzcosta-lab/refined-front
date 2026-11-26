@@ -442,3 +442,30 @@
  .storefront .store-footer { padding-bottom:80px; }
 }
 @media(prefers-reduced-motion:reduce) { .storefront .hero-phone-reveal { transform:none!important; } }
+
+/* DR signature and cinematic scroll choreography */
+.storefront .brand { flex-direction:column; gap:2px; justify-content:center; align-items:center; width:76px; }
+.storefront .brand-mark { width:56px;height:43px; filter:drop-shadow(0 0 8px #a855f733); }
+.storefront .brand-wordmark { align-items:center; font-size:8px; letter-spacing:.035em; line-height:1; gap:2px; }
+.storefront .brand-shop { font-size:6px; letter-spacing:.22em; }
+.storefront .store-header .page-width { min-height:76px; }
+.storefront .store-header { background:linear-gradient(180deg,#090713ed,#10091ded); }
+.cinema-beam { position:absolute; inset:12% -35% 0; pointer-events:none; z-index:0; background:linear-gradient(120deg,transparent 37%,#9d4edd0b 43%,#c084fc25 49%,#6532da0c 56%,transparent 63%); }
+.storefront .hero-orbit { box-shadow:0 0 50px #9b29f140,inset 0 0 30px #9b29f120; }
+.storefront .hero-orbit i:nth-child(3) { border-top-color:#e0aaff; border-right-color:#7744eb80; }
+.storefront .hero-phone-reveal { transform-style:preserve-3d; }
+.cinema-divider { height:2px; width:min(82%,900px); margin:0 auto; position:relative; background:linear-gradient(90deg,transparent,#a855f755,transparent); overflow:hidden; }
+.cinema-divider span { display:block; width:24%; height:100%; background:linear-gradient(90deg,transparent,#e0b0ff,transparent); animation:dr-light-pass 4s ease-in-out infinite; }
+@keyframes dr-light-pass { from { transform:translateX(-110%); } to { transform:translateX(525%); } }
+@media (hover:hover) { .storefront .brand:hover .brand-mark { filter:drop-shadow(0 0 12px #a855f788); transform:translateY(-1px); } .storefront .brand-mark {transition:transform .3s,filter .3s;} }
+@media(max-width:639px) {
+ .storefront .store-header .page-width { min-height:72px; }
+ .storefront .brand-mark {width:52px;height:40px;}
+ .storefront .brand-wordmark {font-size:7px;}
+ .storefront .brand-shop {font-size:6px;}
+ .storefront .hero-picture {height:clamp(250px,73vw,330px); perspective:850px;}
+ .storefront .hero-orbit {top:66%;width:87vw;opacity:.85;}
+ .storefront .hero-device {mask-image:radial-gradient(ellipse 56% 76% at 50% 48%,#000 46%,#000c 66%,transparent 100%);}
+ .storefront .hero-caption { margin-top:5px; }
+}
+@media(prefers-reduced-motion:reduce) { .cinema-divider span {animation:none;} .cinema-beam {display:none;} }
