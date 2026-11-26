@@ -27,7 +27,7 @@ const HERO_LINE_2 = ["sua", "experiência."];
 
 function Reveal({ children, className = "", delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
   const reduced = useReducedMotion();
-  return <motion.div className={className} initial={reduced ? false : { opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.12 }} transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}>{children}</motion.div>;
+  return <motion.div className={className} initial={reduced ? false : { opacity: 0, y: 28, scale: .97 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true, amount: 0.12 }} transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}>{children}</motion.div>;
 }
 
 function InstagramLink({ children, quiet = false, className = "" }: { children: ReactNode; quiet?: boolean; className?: string }) {
@@ -43,16 +43,20 @@ function Index() {
   const rail = useRef<HTMLDivElement>(null);
   const hero = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: hero, offset: ["start start", "end end"] });
+  const { scrollYProgress } = useScroll({ target: hero, offset: ["start start", "end start"] });
   const progress = useSpring(scrollYProgress, { stiffness: 110, damping: 28, restDelta: 0.001 });
   const phoneY = useTransform(progress, [0, 0.3, 1], [0, -8, -35]);
   const phoneScale = useTransform(progress, [0, 0.25, 0.85, 1], [1, 1.03, 1.13, 1.08]);
-  const phoneRotate = useTransform(progress, [0, 0.55, 1], [0, -3, 2]);
+  const phoneRotate = useTransform(progress, [0, 0.55, 1], [-3, 3, -2]);
+  const panelTilt = useTransform(progress, [0, 0.5, 1], [12, 0, -12]);
+  const panelSpread = useTransform(progress, [0, 0.6, 1], [18, 42, 65]);
+  const panelSpreadLeft = useTransform(panelSpread, value => -value);
+  const ringRotate = useTransform(progress, [0, 1], [0, 75]);
   const phoneX = useTransform(progress, [0, 0.55, 1], ["0%", "-5%", "4%"]);
   const auraScale = useTransform(progress, [0, 0.5, 1], [0.95, 1.2, 1.05]);
   const auraOpacity = useTransform(progress, [0, 0.45, 1], [0.55, 0.9, 0.6]);
-  const copyOpacity = useTransform(progress, [0, 0.12, 0.35], [1, 1, 0]);
-  const copyY = useTransform(progress, [0, 0.35], [0, -55]);
+  const copyOpacity = useTransform(progress, [0, 0.55, 1], [1, 1, 0.55]);
+  const copyY = useTransform(progress, [0, 1], [0, -45]);
   const normalize = (value: string) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   const words = normalize(search.trim()).split(/\s+/).filter(Boolean);
   const visible = filterCatalog(products.data ?? [], category).filter(product => {
@@ -89,8 +93,11 @@ function Index() {
     <div ref={hero} className="hero-scroll-sequence">
     <section className="store-hero" aria-labelledby="hero-title">
       <motion.div className="hero-aura" aria-hidden="true" style={{ scale: reduced ? 1 : auraScale, opacity: reduced ? 0.55 : auraOpacity }} />
+      <motion.div className="hero-orbit" aria-hidden="true" style={{ rotate: reduced ? 0 : ringRotate }}><i/><i/><i/></motion.div>
       <motion.div className="hero-picture" style={{ y: reduced ? 0 : phoneY, scale: reduced ? 1 : phoneScale, rotate: reduced ? 0 : phoneRotate, x: reduced ? 0 : phoneX }}>
-        <motion.div className="hero-phone-reveal" initial={reduced ? false : { opacity: 0, clipPath: "inset(8% 0 0 0)" }} animate={{ opacity: 1, clipPath: "inset(0% 0 0 0)" }} transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}>
+        <motion.div className="depth-panel depth-left" aria-hidden="true" style={{ x: reduced ? 0 : panelSpreadLeft, rotateY: reduced ? 0 : panelTilt }}><span>01 / MOBILE</span><Smartphone size={34} strokeWidth={1}/><b>SMARTPHONES</b></motion.div>
+        <motion.div className="depth-panel depth-right" aria-hidden="true" style={{ x: reduced ? 0 : panelSpread, rotateY: reduced ? 0 : panelTilt }}><span>02 / TECH</span><Plus size={34} strokeWidth={1}/><b>ACESSÓRIOS</b></motion.div>
+        <motion.div className="hero-phone-reveal" initial={reduced ? false : { opacity: 0, scale: .88, rotateX: 12, clipPath: "inset(12% 0 0 0)" }} animate={{ opacity: 1, scale: 1, rotateX: 0, clipPath: "inset(0% 0 0 0)" }} transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}>
         <img src={heroImage} width={1193} height={1400} fetchPriority="high" alt="Smartphones vistos de frente e de costas" className="hero-device" />
         </motion.div>
       </motion.div>
@@ -98,7 +105,7 @@ function Index() {
         <motion.p className="section-label" initial={reduced ? false : { opacity: 0, y: -8, letterSpacing: "0.34em" }} animate={{ opacity: 1, y: 0, letterSpacing: "0.22em" }} transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}>DRUMMONDSHOP</motion.p>
         <h1 id="hero-title" className="hero-title">
           {HERO_LINE_1.map((word, i) => (
-            <motion.span key={word} className="hero-word mr-[0.26em]" initial={reduced ? false : { opacity: 0, y: 30, filter: "blur(8px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ duration: 0.7, delay: 0.08 + i * 0.09, ease: [0.22, 1, 0.36, 1] }}>{word}</motion.span>
+            <motion.span key={word} className="hero-word hero-highlight mr-[0.26em]" initial={reduced ? false : { opacity: 0, y: 30, filter: "blur(8px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ duration: 0.7, delay: 0.08 + i * 0.09, ease: [0.22, 1, 0.36, 1] }}>{word}</motion.span>
           ))}
           <br className="hidden sm:block" />
           {HERO_LINE_2.map((word, i) => (
@@ -124,7 +131,7 @@ function Index() {
         <div className="catalog-toolbar">
           <div className="catalog-search"><Search size={19} aria-hidden="true" /><input type="search" aria-label="Buscar produtos" placeholder="Buscar celular, marca ou modelo..." value={search} onChange={event => { setSearch(event.target.value); rail.current?.scrollTo({ left: 0, behavior: "instant" }); }} />{search && <button type="button" aria-label="Limpar busca" onClick={() => setSearch("")}><X size={17} /></button>}</div>
           <div className="category-list" role="group" aria-label="Filtrar por categoria">{SHOP_CATEGORIES.map(value => <Button key={value} variant="category" aria-pressed={category === value} onClick={() => choose(value)}>{category === value && <motion.span layoutId="active-category-pill" className="category-pill-bg" transition={reduced ? { duration: 0 } : { type: "spring", stiffness: 380, damping: 32 }} />}<span className="relative z-10">{value}</span></Button>)}</div>
-          <div className="flex shrink-0 gap-2 sm:hidden">
+          <div className="flex shrink-0 gap-2 sm:hidden" hidden={visible.length <= 1}>
             <Button variant="quiet" size="icon" aria-label="Produtos anteriores" title="Produtos anteriores" onClick={() => scroll(-1)}><ChevronLeft /></Button>
             <Button variant="quiet" size="icon" aria-label="Próximos produtos" title="Próximos produtos" onClick={() => scroll(1)}><ChevronRight /></Button>
           </div>
