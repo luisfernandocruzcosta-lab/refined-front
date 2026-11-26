@@ -400,3 +400,14 @@
  .storefront .brand-wordmark { font-size:17px; }
  .storefront .brand-mark { width:35px; height:31px; }
 }
+
+/* Compact brand signature: the monogram is the primary visual element. */
+.storefront .brand { gap:8px; align-items:center; }
+.storefront .brand-mark { width:52px; height:45px; }
+.storefront .brand-wordmark { font-family:var(--font-display); font-size:10px; font-weight:700; line-height:1.1; letter-spacing:.015em; gap:2px; }
+.storefront .brand-shop { font-size:7px; font-weight:650; letter-spacing:.19em; line-height:1.1; color:#cf80ff; }
+@media(max-width:639px) {
+ .storefront .brand-mark { width:48px; height:42px; }
+ .storefront .brand-wordmark { font-size:9px; }
+ .storefront .brand-shop { font-size:7px; }
+}
