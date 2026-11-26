@@ -45,6 +45,8 @@ function Index() {
   const phoneScale = useTransform(progress, [0, 0.25, 0.85, 1], [1, 1.06, 1.65, 1.5]);
   const phoneRotate = useTransform(progress, [0, 0.55, 1], [0, -9, 5]);
   const phoneX = useTransform(progress, [0, 0.55, 1], ["0%", "-5%", "4%"]);
+  const auraScale = useTransform(progress, [0, 0.5, 1], [0.95, 1.2, 1.05]);
+  const auraOpacity = useTransform(progress, [0, 0.45, 1], [0.55, 0.9, 0.6]);
   const copyOpacity = useTransform(progress, [0, 0.12, 0.35], [1, 1, 0]);
   const copyY = useTransform(progress, [0, 0.35], [0, -55]);
   const visible = filterCatalog(products.data ?? [], category);
@@ -77,6 +79,7 @@ function Index() {
 
     <div ref={hero} className="hero-scroll-sequence">
     <section className="store-hero" aria-labelledby="hero-title">
+      <motion.div className="hero-aura" aria-hidden="true" style={{ scale: reduced ? 1 : auraScale, opacity: reduced ? 0.55 : auraOpacity }} />
       <motion.div className="hero-picture" style={{ y: reduced ? 0 : phoneY, scale: reduced ? 1 : phoneScale, rotate: reduced ? 0 : phoneRotate, x: reduced ? 0 : phoneX }}>
         <motion.div className="hero-phone-reveal" initial={reduced ? false : { opacity: 0, clipPath: "inset(8% 0 0 0)" }} animate={{ opacity: 1, clipPath: "inset(0% 0 0 0)" }} transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}>
         <img src={heroImage} width={1193} height={1400} fetchPriority="high" alt="Smartphones em acabamento titânio, vistos de frente e de costas" className="hero-device" />
@@ -84,7 +87,7 @@ function Index() {
       </motion.div>
       <motion.div className="hero-copy page-width" style={{ opacity: reduced ? 1 : copyOpacity, y: reduced ? 0 : copyY }}>
         <motion.p className="section-label" initial={reduced ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>DRUMMONDSHOP</motion.p>
-        <motion.h1 id="hero-title" initial={reduced ? false : { opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.1 }} className="hero-title">Tecnologia que eleva<br className="hidden sm:block" /> <span className="text-primary">sua experiência.</span></motion.h1>
+        <motion.h1 id="hero-title" initial={reduced ? false : { opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.1 }} className="hero-title">Tecnologia que eleva<br className="hidden sm:block" /> <span className="hero-highlight">sua experiência.</span></motion.h1>
         <motion.p className="hero-subtitle" initial={reduced ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.25 }}>Encontre seu próximo smartphone na Drummondshop. Os melhores modelos, acessórios e tecnologia em um só lugar.</motion.p>
         <motion.div className="hero-actions" initial={reduced ? false : { opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.4 }}>
           <Button asChild variant="premium"><a href="#catalogo">Explorar produtos <ArrowRight /></a></Button>
@@ -102,7 +105,7 @@ function Index() {
           <p className="max-w-64 text-sm leading-relaxed text-muted-foreground">Os modelos que você procura.<br />Os detalhes que fazem a diferença.</p>
         </Reveal>
         <div className="catalog-toolbar">
-          <div className="category-list" role="group" aria-label="Filtrar por categoria">{SHOP_CATEGORIES.map(value => <Button key={value} variant="category" aria-pressed={category === value} onClick={() => choose(value)}>{value}</Button>)}</div>
+          <div className="category-list" role="group" aria-label="Filtrar por categoria">{SHOP_CATEGORIES.map(value => <Button key={value} variant="category" aria-pressed={category === value} onClick={() => choose(value)}>{category === value && <motion.span layoutId="active-category-pill" className="category-pill-bg" transition={reduced ? { duration: 0 } : { type: "spring", stiffness: 380, damping: 32 }} />}<span className="relative z-10">{value}</span></Button>)}</div>
           <div className="flex shrink-0 gap-2 sm:hidden">
             <Button variant="quiet" size="icon" aria-label="Produtos anteriores" title="Produtos anteriores" onClick={() => scroll(-1)}><ChevronLeft /></Button>
             <Button variant="quiet" size="icon" aria-label="Próximos produtos" title="Próximos produtos" onClick={() => scroll(1)}><ChevronRight /></Button>
