@@ -384,3 +384,19 @@
  .storefront .instagram-fab { width:44px;height:44px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom)); }
 }
 @media(max-width:359px) { .storefront .page-width {width:calc(100% - 28px);} .storefront .hero-actions a {font-size:12px;padding-inline:7px;} }
+
+/* Wordmark aligned with the headline, preserving the original DR identity. */
+.storefront .brand { gap:10px; align-items:center; }
+.storefront .brand-wordmark { font-family:var(--font-display); font-size:21px; font-weight:750; font-stretch:normal; letter-spacing:-.035em; line-height:1; gap:4px; }
+.storefront .brand-wordmark > span:first-child { color:#fff; }
+.storefront .brand-shop { font-family:inherit; font-weight:650; font-size:12px; letter-spacing:.085em; line-height:1; color:#d78bff; }
+.storefront .brand-mark { width:44px; height:38px; }
+@media(max-width:639px) {
+ .storefront .brand-wordmark { font-size:19px; }
+ .storefront .brand-shop { font-size:11px; }
+ .storefront .brand-mark { width:40px; height:35px; }
+}
+@media(max-width:359px) {
+ .storefront .brand-wordmark { font-size:17px; }
+ .storefront .brand-mark { width:35px; height:31px; }
+}
