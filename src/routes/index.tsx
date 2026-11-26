@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useRef, useState, type ReactNode } from "react";
 import { AnimatePresence, motion, useReducedMotion, useScroll, useSpring, useTransform } from "motion/react";
-import { ArrowUpRight, ArrowRight, ChevronLeft, ChevronRight, Instagram, Menu, X, Plus, Smartphone } from "lucide-react";
+import { ArrowUpRight, ArrowRight, ChevronLeft, ChevronRight, Instagram, Menu, X, Plus, Smartphone, Search, ArrowDown } from "lucide-react";
 import heroImage from "../assets/iphone-15-hero.webp";
 import { fetchProducts, formatPrice, type Product } from "@/lib/products";
 import { INSTAGRAM_URL, SHOP_CATEGORIES, filterCatalog } from "@/lib/catalog";
@@ -22,12 +22,10 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const HERO_LINE_1 = ["Tecnologia", "que", "eleva"];
-const HERO_LINE_2 = ["sua", "experiência."];
 
 function Reveal({ children, className = "", delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
   const reduced = useReducedMotion();
-  return <motion.div className={className} initial={reduced ? false : { opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.12 }} transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}>{children}</motion.div>;
+  return <motion.div className={className} initial={reduced ? false : { opacity: 0, y: 28, scale: .97 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true, amount: 0.12 }} transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}>{children}</motion.div>;
 }
 
 function InstagramLink({ children, quiet = false, className = "" }: { children: ReactNode; quiet?: boolean; className?: string }) {
@@ -37,22 +35,36 @@ function InstagramLink({ children, quiet = false, className = "" }: { children: 
 function Index() {
   const products = useQuery({ queryKey: ["products"], queryFn: fetchProducts });
   const [category, setCategory] = useState("Todos");
+  const [search, setSearch] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
   const [selected, setSelected] = useState<Product | null>(null);
   const rail = useRef<HTMLDivElement>(null);
   const hero = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: hero, offset: ["start start", "end end"] });
+  const { scrollYProgress } = useScroll({ target: hero, offset: ["start start", "end start"] });
   const progress = useSpring(scrollYProgress, { stiffness: 110, damping: 28, restDelta: 0.001 });
-  const phoneY = useTransform(progress, [0, 0.3, 1], [0, -15, -120]);
-  const phoneScale = useTransform(progress, [0, 0.25, 0.85, 1], [1, 1.06, 1.65, 1.5]);
-  const phoneRotate = useTransform(progress, [0, 0.55, 1], [0, -9, 5]);
+  const phoneY = useTransform(progress, [0, 0.3, 1], [0, -8, -35]);
+  const mobileStageY = useTransform(progress, [0, 1], [0, -28]);
+  const phoneScale = useTransform(progress, [0, 0.25, 0.85, 1], [1, 1.03, 1.13, 1.08]);
+  const phoneRotate = useTransform(progress, [0, 0.55, 1], [-3, 3, -2]);
+  const panelTilt = useTransform(progress, [0, 0.5, 1], [12, 0, -12]);
+  const panelSpread = useTransform(progress, [0, 0.6, 1], [18, 42, 65]);
+  const panelSpreadLeft = useTransform(panelSpread, value => -value);
+  const ringRotate = useTransform(progress, [0, 1], [0, 150]);
+  const sceneTilt = useTransform(progress, [0,.4,1], [0,-8,6]);
+  const sceneZoom = useTransform(progress, [0,.5,1], [1,1.12,.98]);
+  const beamX = useTransform(progress, [0,1], ["-35%","35%"]);
   const phoneX = useTransform(progress, [0, 0.55, 1], ["0%", "-5%", "4%"]);
   const auraScale = useTransform(progress, [0, 0.5, 1], [0.95, 1.2, 1.05]);
   const auraOpacity = useTransform(progress, [0, 0.45, 1], [0.55, 0.9, 0.6]);
-  const copyOpacity = useTransform(progress, [0, 0.12, 0.35], [1, 1, 0]);
-  const copyY = useTransform(progress, [0, 0.35], [0, -55]);
-  const visible = filterCatalog(products.data ?? [], category);
+  const copyOpacity = useTransform(progress, [0, 0.55, 1], [1, 1, 0.55]);
+  const copyY = useTransform(progress, [0, 1], [0, -45]);
+  const normalize = (value: string) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const words = normalize(search.trim()).split(/\s+/).filter(Boolean);
+  const visible = filterCatalog(products.data ?? [], category).filter(product => {
+    const text = normalize([product.name, product.brand, product.detail, product.condition].filter(Boolean).join(" "));
+    return words.every(word => text.includes(word));
+  });
   function choose(value: string) {
     setCategory(value);
     setMenuOpen(false);
@@ -83,46 +95,48 @@ function Index() {
     <div ref={hero} className="hero-scroll-sequence">
     <section className="store-hero" aria-labelledby="hero-title">
       <motion.div className="hero-aura" aria-hidden="true" style={{ scale: reduced ? 1 : auraScale, opacity: reduced ? 0.55 : auraOpacity }} />
+      <motion.div className="cinema-beam" aria-hidden="true" style={{ x: reduced ? 0 : beamX }}/>
+      <motion.div className="hero-orbit" aria-hidden="true" style={{ rotate: reduced ? 0 : ringRotate }}><i/><i/><i/></motion.div>
       <motion.div className="hero-picture" style={{ y: reduced ? 0 : phoneY, scale: reduced ? 1 : phoneScale, rotate: reduced ? 0 : phoneRotate, x: reduced ? 0 : phoneX }}>
-        <motion.div className="hero-phone-reveal" initial={reduced ? false : { opacity: 0, clipPath: "inset(8% 0 0 0)" }} animate={{ opacity: 1, clipPath: "inset(0% 0 0 0)" }} transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}>
-        <img src={heroImage} width={1193} height={1400} fetchPriority="high" alt="Smartphones em acabamento titânio, vistos de frente e de costas" className="hero-device" />
+        <motion.div className="depth-panel depth-left" aria-hidden="true" style={{ x: reduced ? 0 : panelSpreadLeft, rotateY: reduced ? 0 : panelTilt }}><span>01 / MOBILE</span><Smartphone size={34} strokeWidth={1}/><b>SMARTPHONES</b></motion.div>
+        <motion.div className="depth-panel depth-right" aria-hidden="true" style={{ x: reduced ? 0 : panelSpread, rotateY: reduced ? 0 : panelTilt }}><span>02 / TECH</span><Plus size={34} strokeWidth={1}/><b>ACESSÓRIOS</b></motion.div>
+        <motion.div className="hero-phone-reveal" style={{ y: reduced ? 0 : mobileStageY, scale: reduced ? 1 : sceneZoom, rotateY: reduced ? 0 : sceneTilt }} initial={reduced ? false : { opacity: 0, rotateX: 12, clipPath: "inset(12% 0 0 0)" }} animate={{ opacity: 1, rotateX: 0, clipPath: "inset(0% 0 0 0)" }} transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}>
+        <img src={heroImage} width={1193} height={1400} fetchPriority="high" alt="Smartphones vistos de frente e de costas" className="hero-device" />
         </motion.div>
       </motion.div>
       <motion.div className="hero-copy page-width" style={{ opacity: reduced ? 1 : copyOpacity, y: reduced ? 0 : copyY }}>
-        <motion.p className="section-label" initial={reduced ? false : { opacity: 0, y: -8, letterSpacing: "0.34em" }} animate={{ opacity: 1, y: 0, letterSpacing: "0.22em" }} transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}>DRUMMONDSHOP</motion.p>
+        <motion.p className="hero-kicker" initial={reduced ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .5 }}>Smartphones e acessórios</motion.p>
         <h1 id="hero-title" className="hero-title">
-          {HERO_LINE_1.map((word, i) => (
-            <motion.span key={word} className="hero-word mr-[0.26em]" initial={reduced ? false : { opacity: 0, y: 30, filter: "blur(8px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ duration: 0.7, delay: 0.08 + i * 0.09, ease: [0.22, 1, 0.36, 1] }}>{word}</motion.span>
-          ))}
-          <br className="hidden sm:block" />
-          {HERO_LINE_2.map((word, i) => (
-            <motion.span key={word} className="hero-word hero-highlight mr-[0.26em] last:mr-0" initial={reduced ? false : { opacity: 0, y: 34, filter: "blur(10px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ duration: 0.75, delay: 0.35 + i * 0.11, ease: [0.22, 1, 0.36, 1] }}>{word}</motion.span>
-          ))}
+          <motion.span className="hero-line" initial={reduced ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .65 }}>Tecnologia que</motion.span>
+          <motion.span className="hero-line hero-accent" initial={reduced ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .7, delay: .12 }}>eleva sua experiência.</motion.span>
         </h1>
-        <motion.p className="hero-subtitle" initial={reduced ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.55 }}>Encontre seu próximo smartphone na Drummondshop. Os melhores modelos, acessórios e tecnologia em um só lugar.</motion.p>
+        <motion.p className="hero-subtitle" initial={reduced ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .6, delay: .24 }}>Seu próximo smartphone está aqui. Encontre os melhores modelos e acessórios em um só lugar.</motion.p>
         <motion.div className="hero-actions" initial={reduced ? false : { opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.68 }}>
           <Button asChild variant="premium"><a href="#catalogo">Explorar produtos <ArrowRight /></a></Button>
-          <InstagramLink quiet>Fale pelo Instagram <ArrowUpRight /></InstagramLink>
+          <InstagramLink quiet>Instagram <ArrowUpRight /></InstagramLink>
         </motion.div>
       </motion.div>
-      <div className="hero-caption page-width"><span>Design. Potência. Possibilidades.</span><a href="#catalogo" className="nav-link">Conheça a seleção <span aria-hidden="true">↓</span></a></div>
+      <div className="hero-caption page-width"><a href="#catalogo" className="scroll-cue">Descubra o catálogo <ArrowDown size={16} aria-hidden="true" /></a></div>
     </section>
     </div>
 
+    <div className="cinema-divider" aria-hidden="true"><span/></div>
     <section id="catalogo" className="catalog-section" aria-labelledby="catalog-title">
       <div className="page-width">
         <Reveal className="catalog-heading">
-          <div><p className="section-label">ESCOLHA O SEU PRÓXIMO</p><h2 id="catalog-title" className="section-title">Seu próximo upgrade.</h2></div>
+          <div><p className="section-label">Explore nossa seleção</p><h2 id="catalog-title" className="section-title">Encontre seu próximo <span className="catalog-title-accent">upgrade.</span></h2></div>
           <p className="max-w-64 text-sm leading-relaxed text-muted-foreground">Os modelos que você procura.<br />Os detalhes que fazem a diferença.</p>
         </Reveal>
         <div className="catalog-toolbar">
+          <div className="catalog-search"><Search size={19} aria-hidden="true" /><input type="search" aria-label="Buscar produtos" placeholder="Buscar celular, marca ou modelo..." value={search} onChange={event => { setSearch(event.target.value); rail.current?.scrollTo({ left: 0, behavior: "instant" }); }} />{search && <button type="button" aria-label="Limpar busca" onClick={() => setSearch("")}><X size={17} /></button>}</div>
           <div className="category-list" role="group" aria-label="Filtrar por categoria">{SHOP_CATEGORIES.map(value => <Button key={value} variant="category" aria-pressed={category === value} onClick={() => choose(value)}>{category === value && <motion.span layoutId="active-category-pill" className="category-pill-bg" transition={reduced ? { duration: 0 } : { type: "spring", stiffness: 380, damping: 32 }} />}<span className="relative z-10">{value}</span></Button>)}</div>
-          <div className="flex shrink-0 gap-2 sm:hidden">
+          <div className="catalog-arrows flex shrink-0 gap-2 sm:hidden" hidden={visible.length <= 1}>
             <Button variant="quiet" size="icon" aria-label="Produtos anteriores" title="Produtos anteriores" onClick={() => scroll(-1)}><ChevronLeft /></Button>
             <Button variant="quiet" size="icon" aria-label="Próximos produtos" title="Próximos produtos" onClick={() => scroll(1)}><ChevronRight /></Button>
           </div>
         </div>
-        {products.isPending ? <div className="product-grid" aria-label="Carregando produtos">{[0, 1, 2].map(value => <div key={value} className="skeleton-product motion-safe:animate-pulse" />)}</div> : products.isError ? <div className="catalog-empty"><p>Não foi possível carregar os produtos.</p><Button variant="quiet" onClick={() => products.refetch()}>Tentar novamente</Button></div> : visible.length === 0 ? <div className="catalog-empty"><Smartphone className="mx-auto mb-4 text-primary" /><p>{category === "Todos" ? "Nenhum produto publicado no momento." : "Nenhum produto nesta categoria no momento."}</p><InstagramLink quiet>Consultar disponibilidade <ArrowUpRight /></InstagramLink></div> :
+        {!products.isPending && !products.isError && <p className="catalog-count" aria-live="polite">{visible.length} {visible.length === 1 ? "produto encontrado" : "produtos encontrados"}</p>}
+        {products.isPending ? <div className="product-grid" aria-label="Carregando produtos">{[0, 1, 2].map(value => <div key={value} className="skeleton-product motion-safe:animate-pulse" />)}</div> : products.isError ? <div className="catalog-empty"><p>Não foi possível carregar os produtos.</p><Button variant="quiet" onClick={() => products.refetch()}>Tentar novamente</Button></div> : visible.length === 0 ? <div className="catalog-empty"><Smartphone className="mx-auto mb-4 text-primary" /><p>{search.trim() ? "Nenhum produto corresponde à sua busca." : category === "Todos" ? "Nenhum produto publicado no momento." : "Nenhum produto nesta categoria no momento."}</p>{search.trim() && <Button variant="quiet" onClick={() => { setSearch(""); choose("Todos"); }}>Limpar filtros</Button>}<InstagramLink quiet>Consultar disponibilidade <ArrowUpRight /></InstagramLink></div> :
           <motion.div ref={rail} key={category} className="product-grid" initial={reduced ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
             {visible.map((product, index) => <Reveal key={product.id} delay={Math.min(index * 0.08, 0.24)} className="product-slot"><article className="catalog-product group">
               <Button variant="ghost" className="product-image-button" aria-label={`Ver detalhes de ${product.name}`} onClick={() => setSelected(product)}>
@@ -131,7 +145,7 @@ function Index() {
                 <span className="product-plus"><Plus size={18} /></span>
               </Button>
               <div className="product-info"><p className="product-brand">{product.brand}</p><h3><Button variant="link" className="product-name" onClick={() => setSelected(product)}>{product.name}</Button></h3><p className="product-detail">{[product.detail, product.condition].filter(Boolean).join(" · ")}</p>
-                <div className="product-prices"><span>{formatPrice(Number(product.price))}</span>{product.old_price !== null && product.old_price > 0 && <del>{formatPrice(Number(product.old_price))}</del>}</div>
+                <div className="product-prices"><span>{formatPrice(Number(product.price))}</span>{product.old_price !== null && Number(product.old_price) > Number(product.price) && <><del>{formatPrice(Number(product.old_price))}</del><span className="product-saving">Economize {formatPrice(Number(product.old_price) - Number(product.price))}</span></>}</div>
                 <InstagramLink quiet className="product-contact">Tenho interesse <ArrowUpRight /></InstagramLink>
               </div>
             </article></Reveal>)}
