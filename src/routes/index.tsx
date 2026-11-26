@@ -22,6 +22,9 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
+const HERO_LINE_1 = ["Tecnologia", "que", "eleva"];
+const HERO_LINE_2 = ["sua", "experiência."];
+
 function Reveal({ children, className = "", delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
   const reduced = useReducedMotion();
   return <motion.div className={className} initial={reduced ? false : { opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.12 }} transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}>{children}</motion.div>;
@@ -86,10 +89,18 @@ function Index() {
         </motion.div>
       </motion.div>
       <motion.div className="hero-copy page-width" style={{ opacity: reduced ? 1 : copyOpacity, y: reduced ? 0 : copyY }}>
-        <motion.p className="section-label" initial={reduced ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>DRUMMONDSHOP</motion.p>
-        <motion.h1 id="hero-title" initial={reduced ? false : { opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.1 }} className="hero-title">Tecnologia que eleva<br className="hidden sm:block" /> <span className="hero-highlight">sua experiência.</span></motion.h1>
-        <motion.p className="hero-subtitle" initial={reduced ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.25 }}>Encontre seu próximo smartphone na Drummondshop. Os melhores modelos, acessórios e tecnologia em um só lugar.</motion.p>
-        <motion.div className="hero-actions" initial={reduced ? false : { opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.4 }}>
+        <motion.p className="section-label" initial={reduced ? false : { opacity: 0, y: -8, letterSpacing: "0.34em" }} animate={{ opacity: 1, y: 0, letterSpacing: "0.22em" }} transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}>DRUMMONDSHOP</motion.p>
+        <h1 id="hero-title" className="hero-title">
+          {HERO_LINE_1.map((word, i) => (
+            <motion.span key={word} className="hero-word mr-[0.26em]" initial={reduced ? false : { opacity: 0, y: 30, filter: "blur(8px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ duration: 0.7, delay: 0.08 + i * 0.09, ease: [0.22, 1, 0.36, 1] }}>{word}</motion.span>
+          ))}
+          <br className="hidden sm:block" />
+          {HERO_LINE_2.map((word, i) => (
+            <motion.span key={word} className="hero-word hero-highlight mr-[0.26em] last:mr-0" initial={reduced ? false : { opacity: 0, y: 34, filter: "blur(10px)" }} animate={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ duration: 0.75, delay: 0.35 + i * 0.11, ease: [0.22, 1, 0.36, 1] }}>{word}</motion.span>
+          ))}
+        </h1>
+        <motion.p className="hero-subtitle" initial={reduced ? false : { opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.55 }}>Encontre seu próximo smartphone na Drummondshop. Os melhores modelos, acessórios e tecnologia em um só lugar.</motion.p>
+        <motion.div className="hero-actions" initial={reduced ? false : { opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.68 }}>
           <Button asChild variant="premium"><a href="#catalogo">Explorar produtos <ArrowRight /></a></Button>
           <InstagramLink quiet>Fale pelo Instagram <ArrowUpRight /></InstagramLink>
         </motion.div>
